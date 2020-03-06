@@ -17,6 +17,8 @@ import Drawer from "@material-ui/core/Drawer";
 // @material-ui/icons
 import MenuIcon from "@material-ui/icons/Menu";
 
+import { ROOT_URL } from "../../constants"
+
 // core components
 import styles from "assets/jss/material-kit-react/components/headerStyle.js";
 
@@ -68,7 +70,7 @@ export default function Header(props) {
   });
   const brandComponent = (
     <div><img src={require('assets/img/aces_logo_notext_sm.png')} height="25px"></img>
-    <Button component={Link} to="/" className={classes.title}>{brand}</Button>
+    <Button component={Link} to={ROOT_URL} className={classes.title}>{brand}</Button>
     </div>
   );
   return (

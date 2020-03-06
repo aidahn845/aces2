@@ -23,6 +23,9 @@ import ProductSection from "./Sections/ProductSection.js";
 import TeamSection from "./Sections/TeamSection.js";
 import WorkSection from "./Sections/WorkSection.js";
 
+import { ROOT_URL } from "../../constants"
+
+
 
 const dashboardRoutes = [];
 
@@ -56,7 +59,7 @@ export default function LandingPage(props) {
                   Electric &nbsp;&nbsp; &#8226; &nbsp;&nbsp; Shared
                 </h3>
                 <br /><br />
-              <Button component={Link} to="/vision" variant="contained"
+              <Button component={Link} to={ROOT_URL + "vision"} variant="contained"
                 color="info"
                 size="lg"
               >
