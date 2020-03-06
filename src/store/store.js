@@ -1,6 +1,7 @@
 import React from "react";
 import {LOGIN_USER, LOGOUT_USER, FETCH_PROJECTS_DATA, FETCH_USERS_DATA, VIEW_PROJECTS, VIEW_ONE_PROJECT,
     FETCH_PROJECTS_GEOM, ADD_PROJECT_FILTER, REMOVE_PROJECT_FILTER, RESET_PROJECT_FILTERS, SET_VIEWPORT} from "./actionTypes"
+import {ROOT_URL} from "../constants"
 
 export const Store = React.createContext("");
 
@@ -40,6 +41,16 @@ function reducer(state, action) {
   switch (action.type) {
     case FETCH_PROJECTS_DATA:
       // payload = projects
+
+      // gh: update project image locations
+      let processed = action.payload.map((proj, index) => {
+        var img = proj.properties.desc_photo;
+        if (img && !img.startsWith('http')) {
+          proj.properties.desc_photo = ROOT_URL + proj.properties.desc_photo;
+        }
+        return proj;
+      });
+      
       return {
         ...state, projects: action.payload, visibleProjects: Array.from(action.payload)
       };

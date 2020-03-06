@@ -31,7 +31,8 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 //import { Store } from "../../store/store"
 //import { toggleProjectFilters, viewProject } from "../../store/actions"
 
-import { MAPBOX_TOKEN, HEADER_TITLE, STATUS_COLORS, STATUS_PLAN, STATUS_DESIGN, STATUS_IMPLEMENT, STATUS_LIVE, STATUS_ARCHIVE } from "../../constants"
+import { MAPBOX_TOKEN, HEADER_TITLE, STATUS_COLORS, STATUS_PLAN, STATUS_DESIGN, 
+STATUS_IMPLEMENT, STATUS_LIVE, STATUS_ARCHIVE, ROOT_URL } from "../../constants"
 
 import imagesStyle from "assets/jss/material-kit-react/imagesStyles.js";
 
@@ -368,7 +369,7 @@ export default function DetailsPanel(props) {
               <Grid item xs={12} sm={12} md={6}>
                 <Box display="flex" p={2} style={{ width: '100%' }}>
                   <div style={{ width: '80px', height: '80px', borderRadius: '50%', overflow: 'hidden' }}>
-                    <img src={'/images/user' + person.id + '.jpg'} width="80px" />
+                    <img src={ROOT_URL + 'images/user' + person.id + '.jpg'} width="80px" />
                   </div>
                   <div style={{ padding: '10px 10px', verticalAlign: 'middle' }}>
                     <FormLabel style={{ fontWeight: 'bold', color: 'black' }}>{person.name}</FormLabel>
