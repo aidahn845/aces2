@@ -1,0 +1,21 @@
+{
+  "name": "",
+  "homepage": "",
+  "authors": [
+    ""
+  ],
+  "description": "",
+  "main": "dist/index.js",
+  "keywords": [
+    ""
+  ],
+  "license": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "private": true
+}
