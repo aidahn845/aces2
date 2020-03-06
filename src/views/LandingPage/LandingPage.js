@@ -3,6 +3,7 @@ import React from "react";
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+import { Link, NavLink } from "react-router-dom";
 
 // @material-ui/icons
 
@@ -55,11 +56,9 @@ export default function LandingPage(props) {
                   Electric &nbsp;&nbsp; &#8226; &nbsp;&nbsp; Shared
                 </h3>
                 <br /><br />
-              <Button
+              <Button component={Link} to="/vision" variant="contained"
                 color="info"
                 size="lg"
-                href=""
-                rel="noopener noreferrer"
               >
                 <i className="fas fa-play" />&nbsp;
                 Learn more

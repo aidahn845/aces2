@@ -133,7 +133,6 @@ export default function ProjectsPage(props) {
     setViewport(vp, state, dispatch);
   }
 
-
   return (
     <Box>
       <div style={{
