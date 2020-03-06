@@ -14,6 +14,7 @@ import {
   ListSubheader, ListItemIcon, Card, CardActionArea, CardContent, CardMedia, List, ListItem
 } from "@material-ui/core";
 
+import { ROOT_URL } from "../../constants"
 
 //import { Store } from "../../store/store"
 //import { toggleProjectFilters, viewProject } from "../../store/actions"
@@ -66,7 +67,7 @@ export default function ResultsPanel(props) {
     return null;
 
   const handleProjectClick = (project) => {
-    props.history.push("/projects/" + project.properties.id);
+    props.history.push(ROOT_URL + "projects/" + project.properties.id);
   };
 
   return (
