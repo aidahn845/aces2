@@ -14,3 +14,6 @@ export const STATUS_ARCHIVE = 5;
 export const STATUS_COLORS = ['#ccc', '#9A00F0', '#FFD417', '#7373ff', '#00DC13', '#a3a3a3'];
 
 export const HEADER_TITLE = 'FL A&middot;C&middot;E&middot;S';
+
+//export const ROOT_URL = "/";
+export const ROOT_URL = "/aces2/";  // gh pages only

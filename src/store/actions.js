@@ -1,9 +1,9 @@
 import {LOGIN_USER, LOGOUT_USER, FETCH_PROJECTS_DATA, FETCH_USERS_DATA, FETCH_PROJECTS_GEOM,
   VIEW_PROJECTS, VIEW_ONE_PROJECT, ADD_PROJECT_FILTER, REMOVE_PROJECT_FILTER, RESET_PROJECT_FILTERS, SET_VIEWPORT} from "./actionTypes"
-
+import {ROOT_URL} from "../constants"
 
 // payload: projects
-const PROJECTS_URL = "/json/projects_data.geojson";
+const PROJECTS_URL = ROOT_URL + "json/projects_data.geojson";
 export const fetchProjectsData = async dispatch => {
   //console.log(FETCH_PROJECTS_DATA + " action started");
 
@@ -15,7 +15,7 @@ export const fetchProjectsData = async dispatch => {
   });
 };
 
-const GEOM_URL = "/json/projects_geom.geojson";
+const GEOM_URL = ROOT_URL + "json/projects_geom.geojson";
 export const fetchProjectsGeom = async dispatch => {
   const data = await fetch(GEOM_URL);
 

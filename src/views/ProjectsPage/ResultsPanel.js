@@ -66,9 +66,6 @@ export default function ResultsPanel(props) {
     return null;
 
   const handleProjectClick = (project) => {
-    //console.log('view project ' + project.properties.id);
-    //props.history.push("/projects/" + feature.properties.projectid);
-    //viewProject(project, state, dispatch);
     props.history.push("/projects/" + project.properties.id);
   };
 

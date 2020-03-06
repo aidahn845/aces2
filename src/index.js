@@ -4,6 +4,7 @@ import { createBrowserHistory } from "history";
 import { BrowserRouter as Router, Route, Switch, useParams } from "react-router-dom";
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
+import { ROOT_URL } from "./constants"
 
 import { StoreProvider } from "./store/store";
 
@@ -23,13 +24,13 @@ ReactDOM.render(
   <StoreProvider>
     <Router history={hist}>
       <Switch>
-        <Route path="/vision" component={VisionPage} />
-        <Route path="/projects/:id" component={ProjectsPage} />
-        <Route path="/projects" component={ProjectsPage} />
-        <Route path="/people" component={PeoplePage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="/test" component={TestPage} />
-        <Route path="/" component={LandingPage} />
+        <Route path={ROOT_URL + "vision"} component={VisionPage} />
+        <Route path={ROOT_URL + "projects/:id"} component={ProjectsPage} />
+        <Route path={ROOT_URL + "projects"} component={ProjectsPage} />
+        <Route path={ROOT_URL + "people"} component={PeoplePage} />
+        <Route path={ROOT_URL + "login"} component={LoginPage} />
+        <Route path={ROOT_URL + "test"} component={TestPage} />
+        <Route path={ROOT_URL} component={LandingPage} />
       </Switch>
     </Router>
   </StoreProvider>,

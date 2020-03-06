@@ -39,7 +39,8 @@ import { ArrowBack } from "@material-ui/icons";
 import DetailsPanel from "./DetailsPanel";
 import ResultsPanel from "./ResultsPanel";
 
-import { MAPBOX_TOKEN, HEADER_TITLE, STATUS_COLORS, STATUS_PLAN, STATUS_DESIGN, STATUS_IMPLEMENT, STATUS_LIVE, STATUS_ARCHIVE } from "../../constants"
+import { ROOT_URL, MAPBOX_TOKEN, HEADER_TITLE, STATUS_COLORS, STATUS_PLAN, STATUS_DESIGN, STATUS_IMPLEMENT, 
+STATUS_LIVE, STATUS_ARCHIVE } from "../../constants"
 
 
 const useStyles = makeStyles(styles);
@@ -103,7 +104,7 @@ export default function ProjectsPage(props) {
     if (!feature.properties.cluster) {
       // clicked on project
       console.log('view project ' + feature.properties.id);
-      props.history.push("/projects/" + feature.properties.id);
+      props.history.push(ROOT_URL + "projects/" + feature.properties.id);
       return;
     }
 

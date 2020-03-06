@@ -70,9 +70,6 @@ export default function TestPage(props) {
   };
 
   const handleProjectClick = (project) => {
-    //console.log('view project ' + project.properties.id);
-    //props.history.push("/projects/" + feature.properties.projectid);
-    //viewProject(project, state, dispatch);
     viewOneProject(project.properties.id, state, dispatch);
   };
 

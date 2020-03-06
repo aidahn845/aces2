@@ -19,6 +19,9 @@ import { Apps, CloudDownload, AccountCircle, Person } from "@material-ui/icons";
 import CustomDropdown from "components/CustomDropdown/CustomDropdown.js";
 import {Button} from "components/CustomButtons/Button";
 
+import { ROOT_URL } from "../../constants"
+
+
 import styles from "assets/jss/material-kit-react/components/headerLinksStyle.js";
 
 const useStyles = makeStyles(styles);
@@ -52,7 +55,7 @@ export default function HeaderLinks(props) {
 
 
   const handleAvatarClick = () => {
-    props.history.push("/login");
+    props.history.push(ROOT_URL + "login");
   };
 
   return (
@@ -64,7 +67,7 @@ export default function HeaderLinks(props) {
         >
           Vision
         </Button> */}
-        <NavLink to="/vision" className={classes.navLink}
+        <NavLink to={ROOT_URL + "vision"} className={classes.navLink}
           activeStyle={{ fontWeight: 'bold', borderBottom: 'solid 2px #fff' }}>Vision</NavLink>
       </ListItem>
       <ListItem className={classes.listItem}>
@@ -74,7 +77,7 @@ export default function HeaderLinks(props) {
         >
           Projects
         </Button>
- */}        <NavLink to="/projects" className={classes.navLink}
+ */}        <NavLink to={ROOT_URL + "projects"} className={classes.navLink}
           activeStyle={{ fontWeight: 'bold', borderBottom: 'solid 2px #fff' }}>Projects</NavLink>
       </ListItem>
       <ListItem className={classes.listItem}>
@@ -84,12 +87,12 @@ export default function HeaderLinks(props) {
         >
           People
         </Button>
- */}        <NavLink to="/people" className={classes.navLink}
+ */}        <NavLink to={ROOT_URL + "people"} className={classes.navLink}
           activeStyle={{ fontWeight: 'bold', borderBottom: 'solid 2px #fff' }}>People</NavLink>
       </ListItem>
 
       <ListItem className={classes.listItem}>
-        <NavLink to="/login">
+        <NavLink to={ROOT_URL + "login"}>
         <IconButton style={{padding: '0', margin: '7px 0 10px 30px'}}>
           <Avatar className={classes2.small}>
             <Person />
