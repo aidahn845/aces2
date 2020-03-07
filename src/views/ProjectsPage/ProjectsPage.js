@@ -104,7 +104,10 @@ export default function ProjectsPage(props) {
     if (!feature.properties.cluster) {
       // clicked on project
       console.log('view project ' + feature.properties.id);
-      props.history.push(ROOT_URL + "projects/" + feature.properties.id);
+
+      // change only if not current project
+      if (projectId == 0)
+        props.history.push(ROOT_URL + "projects/" + feature.properties.id);
       return;
     }
 

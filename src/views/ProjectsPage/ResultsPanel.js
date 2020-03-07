@@ -28,8 +28,6 @@ const useStyles = makeStyles(theme => ({
     //paddingTop: '56.25%', // 16:9
   },
 
-
-
   card: {
     //width: '30%',
     margin: theme.spacing(0),

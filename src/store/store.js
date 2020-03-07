@@ -1,7 +1,9 @@
 import React from "react";
-import {LOGIN_USER, LOGOUT_USER, FETCH_PROJECTS_DATA, FETCH_USERS_DATA, VIEW_PROJECTS, VIEW_ONE_PROJECT,
-    FETCH_PROJECTS_GEOM, ADD_PROJECT_FILTER, REMOVE_PROJECT_FILTER, RESET_PROJECT_FILTERS, SET_VIEWPORT} from "./actionTypes"
-import {ROOT_URL, FILTER_NAME_CATEGORY, FILTER_NAME_MODE, FILTER_NAME_STATUS, FILTER_NAME_DISTRICT} from "../constants"
+import {
+  LOGIN_USER, LOGOUT_USER, FETCH_PROJECTS_DATA, FETCH_USERS_DATA, VIEW_PROJECTS, VIEW_ONE_PROJECT,
+  FETCH_PROJECTS_GEOM, ADD_PROJECT_FILTER, REMOVE_PROJECT_FILTER, RESET_PROJECT_FILTERS, SET_VIEWPORT
+} from "./actionTypes"
+import { ROOT_URL, FILTER_NAME_CATEGORY, FILTER_NAME_MODE, FILTER_NAME_STATUS, FILTER_NAME_DISTRICT } from "../constants"
 
 export const Store = React.createContext("");
 
@@ -13,12 +15,12 @@ export const Store = React.createContext("");
   district: 1-7, turnpike, central office
 */
 const initialViewport = {
-    latitude: 28.15,
-    longitude: -82.5,
-    zoom: 6,
-    bearing: 0,
-    pitch: 0,
-    transitionDuration: 500
+  latitude: 28.15,
+  longitude: -82.5,
+  zoom: 6,
+  bearing: 0,
+  pitch: 0,
+  transitionDuration: 500
 };
 
 const initialState = {
@@ -33,26 +35,109 @@ const initialState = {
   viewport: initialViewport
 };
 
+const peopleDB = [
+  {
+    id: 1000, name: 'Vanko Antonov',
+  }, {
+    id: 1001, name: 'Juan Battle',
+  }, {
+    id: 1002, name: 'Megan Cott',
+  }, {
+    id: 1003, name: 'Julie Bond',
+  }, {
+    id: 1004, name: 'Omkar Dokur',
+  }, {
+    id: 1005, name: 'Lucy Deba Enomah',
+  }, {
+    id: 1006, name: 'Dennis Hinebaugh',
+  }, {
+    id: 1007, name: 'Jason Jackman',
+  }, {
+    id: 1008, name: 'Chanyoung Lee Ph.D.',
+  }, {
+    id: 1009, name: 'Stephanie Lewis',
+  }, {
+    id: 1010, name: 'Dr. Fred L. Mannering',
+  }, {
+    id: 1011, name: 'Nikhil Menon Ph.D.',
+  }, {
+    id: 1012, name: 'Lori Palaio',
+  }
+];
+
+function devPackProjectData(projects) {
+  return projects.map((proj, index) => {
+
+    // img url
+    var imgURL = proj.properties.desc_photo;
+    if (imgURL && !imgURL.toLowerCase().startsWith('http')) {
+      proj.properties.desc_photo = ROOT_URL + proj.properties.desc_photo;
+    }
+
+    // people
+    var num = 1 + Math.floor(Math.random() * 10);
+    let ppeople = [];
+    for (let i = 0; i < num; i++) {
+      var rnd = Math.floor(Math.random() * 12);
+      var person = peopleDB[rnd];
+      const match = ppeople.find(function (element) {
+        return element.id == person.id;
+      });
+      if (!match)
+        ppeople.push(person);
+    }
+    proj.properties['people'] = ppeople;
+
+    // datasets
+    let lineseries = [];
+    for (let i = 0; i < 7; i++) {
+      lineseries.push(Math.floor(Math.random() * 50));
+    }
+    let linechartData = {
+      labels: ["M", "T", "W", "T", "F", "S", "S"],
+      series: [lineseries]
+    }
+
+    let barseries = [];
+    for (let i = 0; i < 12; i++) {
+      barseries.push(50 + Math.floor(Math.random() * 950));
+    }
+    let barchartData = {
+      labels: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "Mai",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ],
+      series: [barseries]
+    }
+    proj.properties['datasets'] = [linechartData, barchartData];
+
+    return proj;
+  });
+}
+
 function reducer(state, action) {
   var newFilters;
-  
+
   console.log('reducer: ' + action.type);
 
   switch (action.type) {
     case FETCH_PROJECTS_DATA:
       // payload = projects
 
-      // gh: update project image locations
-      /*let processed = action.payload.map((proj, index) => {
-        var img = proj.properties.desc_photo;
-        if (img && !img.startsWith('http')) {
-          proj.properties.desc_photo = ROOT_URL + proj.properties.desc_photo;
-        }
-        return proj;
-      });*/
-      
+      let projects = devPackProjectData(action.payload);
+
       return {
-        ...state, projects: action.payload, visibleProjects: Array.from(action.payload)
+        ...state, projects: projects, visibleProjects: Array.from(projects)
       };
     case FETCH_PROJECTS_GEOM:
       // payload = projects
@@ -86,7 +171,7 @@ function reducer(state, action) {
       newFilters = [...state.projectFilters, action.payload];
       return {
         ...state,
-        projectFilters: newFilters, 
+        projectFilters: newFilters,
         visibleProjects: filterProjects(state.projects, newFilters)
       };
       return state;
@@ -114,16 +199,16 @@ function reducer(state, action) {
 function filterProjects(projects, filters) {
   let filtered = [];
 
-  let statusFilters = filters.filter(function(element) { 
+  let statusFilters = filters.filter(function (element) {
     return element.name == 'status';
   });
-  let categoryFilters = filters.filter(function(element) { 
+  let categoryFilters = filters.filter(function (element) {
     return element.name == 'category';
   });
-  let modeFilters = filters.filter(function(element) { 
+  let modeFilters = filters.filter(function (element) {
     return element.name == 'mode';
   });
-  let districtFilters = filters.filter(function(element) { 
+  let districtFilters = filters.filter(function (element) {
     return element.name == 'district';
   });
 

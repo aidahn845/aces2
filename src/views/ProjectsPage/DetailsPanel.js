@@ -244,78 +244,7 @@ export default function DetailsPanel(props) {
 
   let pmodes = pprops.mode.toLowerCase().split(';');
 
-  let ppeopleAll = [
-    {
-      id: 1000, name: 'Vanko Antonov',
-    }, {
-      id: 1001, name: 'Juan Battle',
-    }, {
-      id: 1002, name: 'Megan Cott',
-    }, {
-      id: 1003, name: 'Julie Bond',
-    }, {
-      id: 1004, name: 'Omkar Dokur',
-    }, {
-      id: 1005, name: 'Lucy Deba Enomah',
-    }, {
-      id: 1006, name: 'Dennis Hinebaugh',
-    }, {
-      id: 1007, name: 'Jason Jackman',
-    }, {
-      id: 1008, name: 'Chanyoung Lee Ph.D.',
-    }, {
-      id: 1009, name: 'Stephanie Lewis',
-    }, {
-      id: 1010, name: 'Dr. Fred L. Mannering',
-    }, {
-      id: 1011, name: 'Nikhil Menon Ph.D.',
-    }, {
-      id: 1012, name: 'Lori Palaio',
-    }
-  ];
 
-  var num = 1 + Math.floor(Math.random() * 10);
-  let ppeople = [];
-  for (let i = 0; i < num; i++) {
-    var rnd = Math.floor(Math.random() * 12);
-    var person = ppeopleAll[rnd];
-    const match = ppeople.find(function (element) {
-      return element.id == person.id;
-    });
-    if (!match)
-      ppeople.push(person);
-  }
-
-  let lineseries = [];
-  for (let i = 0; i < 7; i++) {
-    lineseries.push(Math.floor(Math.random() * 50));
-  }
-  let linechartData = {
-    labels: ["M", "T", "W", "T", "F", "S", "S"],
-    series: [lineseries]
-  }
-
-  let barseries = [];
-  for (let i = 0; i < 12; i++) {
-    barseries.push(50 + Math.floor(Math.random() * 950));
-  }
-  let barchartData = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "Mai",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec"
-    ],
-    series: [barseries]
-  }
 
   return (
     <Paper style={{
@@ -364,7 +293,7 @@ export default function DetailsPanel(props) {
 
       <Grid container>
         {
-          ppeople.map((person) => {
+          pprops.people.map((person) => {
             return (
               <Grid item xs={12} sm={12} md={6}>
                 <Box display="flex" p={2} style={{ width: '100%' }}>
@@ -398,10 +327,10 @@ export default function DetailsPanel(props) {
             <CardHeader color="success">
               <ChartistGraph
                 className="ct-chart"
-                data={linechartData}
+                data={pprops.datasets[0]}
                 type="Line"
                 options={dailySalesChart.options}
-                listener={dailySalesChart.animation}
+                //listener={dailySalesChart.animation}
               />
             </CardHeader>
             <CardBody>
@@ -414,11 +343,11 @@ export default function DetailsPanel(props) {
             <CardHeader color="warning">
               <ChartistGraph
                 className="ct-chart"
-                data={barchartData}
+                data={pprops.datasets[1]}
                 type="Bar"
                 options={emailsSubscriptionChart.options}
                 responsiveOptions={emailsSubscriptionChart.responsiveOptions}
-                listener={emailsSubscriptionChart.animation}
+                //listener={emailsSubscriptionChart.animation}
               />
             </CardHeader>
             <CardBody>

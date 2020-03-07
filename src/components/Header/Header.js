@@ -70,7 +70,10 @@ export default function Header(props) {
   });
   const brandComponent = (
     <div><img src={require('assets/img/aces_logo_notext_sm.png')} height="25px"></img>
-    <Button component={Link} to={ROOT_URL} className={classes.title}>{brand}</Button>
+    {
+      //props.location != ROOT_URL && 
+      <Button component={Link} to={ROOT_URL} className={classes.title}>{brand}</Button>
+    }
     </div>
   );
   return (
