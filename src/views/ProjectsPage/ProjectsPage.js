@@ -125,7 +125,6 @@ export default function ProjectsPage(props) {
         transitionDuration: 500
       };
 
-      //_setViewport(vp);
       setViewport(vp, state, dispatch);
     });
   };

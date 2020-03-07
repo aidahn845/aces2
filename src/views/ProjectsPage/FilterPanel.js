@@ -18,7 +18,10 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 
-import {STATUS_COLORS, STATUS_PLAN, STATUS_DESIGN, STATUS_IMPLEMENT, STATUS_LIVE, STATUS_ARCHIVE} from "../../constants"
+import {
+  STATUS_COLORS, STATUS_PLAN, STATUS_DESIGN, STATUS_IMPLEMENT, STATUS_LIVE, STATUS_ARCHIVE, ROOT_URL,
+  FILTER_NAME_CATEGORY, FILTER_NAME_MODE, FILTER_NAME_STATUS, FILTER_NAME_DISTRICT
+} from "../../constants"
 
 //import { Store } from "../../store/store"
 //import { toggleProjectFilters, viewProject } from "../../store/actions"
@@ -47,6 +50,54 @@ const useStyles = makeStyles(theme => ({
 export default function FilterPanel(props) {
   const classes = useStyles();
 
+  // use current filter status
+
+  //const currFilters = Array.from(projectFilters);
+  const filterIsActive = (filterName, filterValue) => {
+    var isActive = projectFilters.findIndex(function (element) {
+      return element.name == filterName && element.value == filterValue;
+    }) >= 0;
+    console.log(filterName + '-' + filterValue + ': ' + isActive);
+    return isActive;
+  };
+
+  const updateCheckboxes = () => {
+    setStatusState({
+      planning: filterIsActive(FILTER_NAME_STATUS, STATUS_PLAN),
+      implementation: filterIsActive(FILTER_NAME_STATUS, STATUS_DESIGN),
+      live: filterIsActive(FILTER_NAME_STATUS, STATUS_LIVE)
+    });
+
+    setCategoryState({
+      autonomous: filterIsActive(FILTER_NAME_CATEGORY, 'a'),
+      connected: filterIsActive(FILTER_NAME_CATEGORY, 'c'),
+      electric: filterIsActive(FILTER_NAME_CATEGORY, 'e'),
+      shared: filterIsActive(FILTER_NAME_CATEGORY, 's')
+    });
+
+    setModeState({
+      auto: filterIsActive(FILTER_NAME_MODE, 'a'),
+      bike: filterIsActive(FILTER_NAME_MODE, 'b'),
+      transit: filterIsActive(FILTER_NAME_MODE, 't')
+    });
+    setDistrictState({
+      d1: filterIsActive(FILTER_NAME_DISTRICT, '1'),
+      d2: filterIsActive(FILTER_NAME_DISTRICT, '2'),
+      d3: filterIsActive(FILTER_NAME_DISTRICT, '3'),
+      d4: filterIsActive(FILTER_NAME_DISTRICT, '4'),
+      d5: filterIsActive(FILTER_NAME_DISTRICT, '5'),
+      d6: filterIsActive(FILTER_NAME_DISTRICT, '6'),
+      d7: filterIsActive(FILTER_NAME_DISTRICT, '7'),
+      turnpike: filterIsActive(FILTER_NAME_DISTRICT, 't')
+    });
+  }
+
+  React.useEffect(
+    () => {
+      updateCheckboxes();
+    }, []);
+
+
   const [statusState, setStatusState] = React.useState({
     planning: false,
     implementation: false,
@@ -66,7 +117,7 @@ export default function FilterPanel(props) {
       default:
         return;
     }
-    toggleProjectFilters({ name: 'status', value: value }, state.state, state.dispatch);
+    toggleProjectFilters({ name: FILTER_NAME_STATUS, value: value }, state.state, state.dispatch);
   };
 
   const [categoryState, setCategoryState] = React.useState({
@@ -92,7 +143,7 @@ export default function FilterPanel(props) {
       default:
         return;
     }
-    toggleProjectFilters({ name: 'category', value: value }, state.state, state.dispatch);
+    toggleProjectFilters({ name: FILTER_NAME_CATEGORY, value: value }, state.state, state.dispatch);
   };
 
   const [modeState, setModeState] = React.useState({
@@ -114,7 +165,7 @@ export default function FilterPanel(props) {
       default:
         return;
     }
-    toggleProjectFilters({ name: 'mode', value: value }, state.state, state.dispatch);
+    toggleProjectFilters({ name: FILTER_NAME_MODE, value: value }, state.state, state.dispatch);
   };
 
   const [districtState, setDistrictState] = React.useState({
@@ -156,8 +207,9 @@ export default function FilterPanel(props) {
       default:
         return;
     }
-    toggleProjectFilters({ name: 'district', value: value }, state.state, state.dispatch);
+    toggleProjectFilters({ name: FILTER_NAME_DISTRICT, value: value }, state.state, state.dispatch);
   };
+
 
 
   const { projects, visibleProjects, projectFilters, toggleProjectFilters, state } = props;
@@ -195,16 +247,16 @@ export default function FilterPanel(props) {
             </Box>
             <Box>
               <FormControlLabel className={classes.filterCheckboxLabel}
-              control={<Checkbox color='primary' className={classes.filterCheckbox} checked={statusState.implementation}
-                onChange={handleChangeStatus(2)} value="2" />} label="Implementation" />
+                control={<Checkbox color='primary' className={classes.filterCheckbox} checked={statusState.implementation}
+                  onChange={handleChangeStatus(2)} value="2" />} label="Implementation" />
               <svg height="12" width="12" style={{ verticalAlign: 'middle' }}>
                 <circle cx="6" cy="6" r="6" stroke="white" stroke-width="0" fill={STATUS_COLORS[STATUS_DESIGN]} />
               </svg>
             </Box>
             <Box>
               <FormControlLabel className={classes.filterCheckboxLabel}
-              control={<Checkbox color='primary' className={classes.filterCheckbox} checked={statusState.live}
-                onChange={handleChangeStatus(4)} value="4" />} label="Live" />
+                control={<Checkbox color='primary' className={classes.filterCheckbox} checked={statusState.live}
+                  onChange={handleChangeStatus(4)} value="4" />} label="Live" />
               <svg height="12" width="12" style={{ verticalAlign: 'middle' }}>
                 <circle cx="6" cy="6" r="6" stroke="white" stroke-width="0" fill={STATUS_COLORS[STATUS_LIVE]} />
               </svg>

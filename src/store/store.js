@@ -1,7 +1,7 @@
 import React from "react";
 import {LOGIN_USER, LOGOUT_USER, FETCH_PROJECTS_DATA, FETCH_USERS_DATA, VIEW_PROJECTS, VIEW_ONE_PROJECT,
     FETCH_PROJECTS_GEOM, ADD_PROJECT_FILTER, REMOVE_PROJECT_FILTER, RESET_PROJECT_FILTERS, SET_VIEWPORT} from "./actionTypes"
-import {ROOT_URL} from "../constants"
+import {ROOT_URL, FILTER_NAME_CATEGORY, FILTER_NAME_MODE, FILTER_NAME_STATUS, FILTER_NAME_DISTRICT} from "../constants"
 
 export const Store = React.createContext("");
 
@@ -43,13 +43,13 @@ function reducer(state, action) {
       // payload = projects
 
       // gh: update project image locations
-      let processed = action.payload.map((proj, index) => {
+      /*let processed = action.payload.map((proj, index) => {
         var img = proj.properties.desc_photo;
         if (img && !img.startsWith('http')) {
           proj.properties.desc_photo = ROOT_URL + proj.properties.desc_photo;
         }
         return proj;
-      });
+      });*/
       
       return {
         ...state, projects: action.payload, visibleProjects: Array.from(action.payload)
@@ -177,23 +177,23 @@ function projectIsMatch(project, filter) {
   var vals;
 
   switch (filter.name) {
-    case 'category': // one or more
+    case FILTER_NAME_CATEGORY: // one or more
       projectData = project.properties.category;
       vals = projectData.toLowerCase().split(';');
       if (vals.includes(filter.value.toLowerCase()))
         return true;
       break;
-    case 'status': // number
+    case FILTER_NAME_STATUS: // number
       if (filter.value == project.properties.status)
         return true;
       break;
-    case 'mode': // one or more
+    case FILTER_NAME_MODE: // one or more
       projectData = project.properties.mode;
       vals = projectData.toLowerCase().split(';');
       if (vals.includes(filter.value.toLowerCase()))
         return true;
       break;
-    case 'district': // one or more
+    case FILTER_NAME_DISTRICT: // one or more
       projectData = project.properties.district;
       vals = projectData.toLowerCase().split(';');
       if (vals.includes(filter.value.toLowerCase()))

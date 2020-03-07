@@ -11,9 +11,20 @@ export const STATUS_IMPLEMENT = 3;
 export const STATUS_LIVE = 4;
 export const STATUS_ARCHIVE = 5;
 
+export const FILTER_NAME_STATUS = 'status';
+export const FILTER_NAME_CATEGORY = 'category';
+export const FILTER_NAME_MODE = 'mode';
+export const FILTER_NAME_DISTRICT = 'district';
+
 export const STATUS_COLORS = ['#ccc', '#9A00F0', '#FFD417', '#7373ff', '#00DC13', '#a3a3a3'];
 
 export const HEADER_TITLE = 'FL A&middot;C&middot;E&middot;S';
 
-//export const ROOT_URL = "/";
-export const ROOT_URL = "/aces2/";  // gh pages only
+let root_url;
+if (process.env.REACT_APP_ENVIRONMENT === 'ghpages') {
+  root_url = "/aces2/";
+} else {
+  root_url = "/";
+}
+
+export const ROOT_URL = root_url;
