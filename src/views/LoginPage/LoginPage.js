@@ -49,7 +49,7 @@ export default function LoginPage(props) {
   };
 
   const handleLoginSubmit = event => {
-    loginUser(userDispatch, loginValue, passwordValue, props.history, setIsLoading, setError, )
+    loginUser(userDispatch, loginValue, passwordValue, props.history, setIsLoading, setError)
   };
 
   return (
@@ -62,7 +62,7 @@ export default function LoginPage(props) {
         {...rest}
       />
       <div>
-        <div className={classes.container}>
+        <div className={classes.container} style={{minHeight: 'calc(100vh - 100px)'}}>
           <GridContainer justify="center">
             <GridItem xs={12} sm={12} md={6}>
               <Card>
@@ -162,7 +162,7 @@ export default function LoginPage(props) {
                           size="large"
                         >
                           Login
-                  </Button>
+                        </Button>
                       )}
                     <Button simple
                       color="primary"

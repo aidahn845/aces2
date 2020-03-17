@@ -92,10 +92,10 @@ function processProjectData(projects) {
     }
 
     // people
-    var num = 1 + Math.floor(Math.random() * 10);
+    var num = 2 + Math.floor(Math.random() * 8);
     let ppeople = [];
-    for (let i = 0; i < num; i++) {
-      var rnd = Math.floor(Math.random() * 12);
+    while(ppeople.length < num) {
+      var rnd = Math.floor(Math.random() * peopleDB.length);
       var person = peopleDB[rnd];
       const match = ppeople.find(function (element) {
         return element.id == person.id;
