@@ -18,6 +18,7 @@ import Drawer from "@material-ui/core/Drawer";
 import MenuIcon from "@material-ui/icons/Menu";
 
 import { ROOT_URL } from "../../constants"
+import { useUserState, useUserDispatch, loginUser, signOut } from "../../context/UserContext";
 
 // core components
 import styles from "assets/jss/material-kit-react/components/headerStyle.js";
@@ -27,6 +28,10 @@ const useStyles = makeStyles(styles);
 export default function Header(props) {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   React.useEffect(() => {
     if (props.changeColorOnScroll) {
@@ -68,12 +73,20 @@ export default function Header(props) {
     [classes.absolute]: absolute,
     [classes.fixed]: fixed
   });
+
+
+  const { isAuthenticated, isAdmin } = useUserState();
+
   const brandComponent = (
     <div><img src={require('assets/img/aces_logo_notext_sm.png')} height="25px"></img>
-    {
-      //props.location != ROOT_URL && 
-      <Button component={Link} to={ROOT_URL} className={classes.title}>{brand}</Button>
-    }
+      {
+        brand && brand.length > 0 &&
+        <Button component={Link} to={ROOT_URL} className={classes.title}>{brand}</Button>
+      }
+      {
+        brand && brand.length > 0 && isAuthenticated && isAdmin && 
+        <span style={{ color: 'white', fontSize: '1.2em', verticalAlign: 'middle' }}>Administration</span>
+      }
     </div>
   );
   return (
@@ -86,8 +99,8 @@ export default function Header(props) {
               {leftLinks}
             </Hidden>
           ) : (
-            brandComponent
-          )}
+              brandComponent
+            )}
         </div>
         <Hidden smDown implementation="css">
           {rightLinks}

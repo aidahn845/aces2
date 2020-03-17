@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { render } from 'react-dom';
-import MapGL, { Source, Layer } from "react-map-gl";
+import MapGL, { Source, Layer, NavigationControl, ScaleControl } from "react-map-gl";
 import { useParams } from "react-router-dom";
 
 // @material-ui/core components
@@ -13,11 +13,11 @@ import styles from "assets/jss/material-kit-react/views/projectsPage.js";
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+import { Paper, ButtonBase } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
-import IconButton from '@material-ui/core/IconButton';
+import { IconButton, Button } from '@material-ui/core';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -29,18 +29,19 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Card from "components/Card/Card.js";
 import { pink, red, lightBlue, grey, lightGreen, blueGrey } from "@material-ui/core/colors";
-import SearchIcon from '@material-ui/icons/Search';
+import { SearchIcon, Satellite, Map as MapIcon } from '@material-ui/icons';
 import Box from '@material-ui/core/Box';
 import FilterPanel from "./FilterPanel";
 
 import { Store } from "../../store/store"
-import { fetchProjectsData, fetchProjectsGeom, toggleProjectFilters, viewProjects, viewOneProject, setViewport } from "../../store/actions"
-import { ArrowBack } from "@material-ui/icons";
+import {
+  fetchProjectsData, fetchProjectsGeom, toggleProjectFilters, viewProjects, viewOneProject,
+  setViewport, toggleGeomVisibility, toggleMapStyle
+} from "../../store/actions"
 import DetailsPanel from "./DetailsPanel";
 import ResultsPanel from "./ResultsPanel";
 
-import { ROOT_URL, MAPBOX_TOKEN, HEADER_TITLE, STATUS_COLORS, STATUS_PLAN, STATUS_DESIGN, STATUS_IMPLEMENT, 
-STATUS_LIVE, STATUS_ARCHIVE } from "../../constants"
+import * as Constants from "../../constants"
 
 
 const useStyles = makeStyles(styles);
@@ -85,19 +86,29 @@ export default function ProjectsPage(props) {
     ...rest
   };
 
-  const [_viewport, _setViewport] = React.useState(state.viewport);
+
+  const geomBaseFilter = ["==", ["get", "id"], projectId];
+  const polygonBaseFilter = ["==", ["geometry-type"], "Polygon"];
+  const lineBaseFilter = ["==", ["geometry-type"], "LineString"];
+  const pointBaseFilter = ["==", ["geometry-type"], "Point"];
+
+  const [geomPolygonFilter, setGeomPolygonFilter] = React.useState(["all", polygonBaseFilter, geomBaseFilter]);
+  const [geomLineFilter, setGeomLineFilter] = React.useState(["all", lineBaseFilter, geomBaseFilter]);
+  const [geomPointFilter, setGeomPointFilter] = React.useState(["all", pointBaseFilter, geomBaseFilter]);
 
   React.useEffect(
     () => {
-      state.projects.length === 0 && fetchProjectsData(dispatch) 
-      /*&& fetchProjectsGeom(dispatch)*/;
+      state.projects.length === 0 && fetchProjectsData(dispatch)
+        && fetchProjectsGeom(dispatch);
     },
     [state]
   );
 
-  const sourceRef = React.useRef();
+  const mbProjectSourceRef = React.useRef();
+  const mbPolygonSourceRef = React.useRef();
+  const mapboxRef = React.useRef();
 
-  const handleMapClick = event => {
+  const handleMapOnClick = event => {
     const feature = event.features[0];
     if (!feature) return;
 
@@ -105,35 +116,72 @@ export default function ProjectsPage(props) {
       // clicked on project
       console.log('view project ' + feature.properties.id);
 
-      // change only if not current project
-      if (projectId == 0)
-        props.history.push(ROOT_URL + "projects/" + feature.properties.id);
+      // change only if not viewing project details
+      if (projectId == 0) {
+        props.history.push(Constants.ROOT_URL + "projects/" + feature.properties.id);
+      }
+
       return;
     }
 
+    // clicked on cluster circle
     const clusterId = feature.properties.cluster_id;
 
-    const mapboxSource = sourceRef.current.getSource();
-
-    mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
+    const projectSource = mbProjectSourceRef.current.getSource();
+    projectSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
       if (err) {
         return;
       }
 
       let vp = {
-        ..._viewport,
+        ...state.viewport,
         longitude: feature.geometry.coordinates[0],
         latitude: feature.geometry.coordinates[1],
         zoom: zoom + 1,
-        transitionDuration: 500
+        transitionDuration: Constants.MAPBOX_TRANSITION_DURATION
       };
 
       setViewport(vp, state, dispatch);
     });
   };
 
-  const _onViewportChange = vp => {
+
+  const [hoveredProject, setHoveredProject] = React.useState(0);
+
+  const handleMapOnHover = event => {
+    if (projectId > 0) {
+      return;
+    }
+
+    if (!event.features || event.features.length <= 0 ||
+      !event.features[0].properties || !event.features[0].properties.id) {
+      // not over project icon, hide any visible geom
+      if (hoveredProject != 0) {
+        //_setGeomVisibility(hoveredProject, false);
+        toggleGeomVisibility(0, state, dispatch);
+        console.log('hide geoms');
+        setHoveredProject(0);
+      }
+    } else {
+      // over project icon, show geom
+      let projectId = event.features[0].properties.id;
+
+      if (hoveredProject != projectId) {
+        console.log('show geom project ' + projectId);
+        //_setGeomVisibility(projectId, true);
+        toggleGeomVisibility(projectId, state, dispatch);
+        setHoveredProject(projectId);
+      }
+    }
+  }
+
+  const onViewportChange = vp => {
     setViewport(vp, state, dispatch);
+  }
+
+  const onMapStyleClick = event => {
+    console.log("toggle map style");
+    toggleMapStyle(state, dispatch);
   }
 
   return (
@@ -146,10 +194,11 @@ export default function ProjectsPage(props) {
           color="dark"
           fixed
           brand="FL A&middot;C&middot;E&middot;S"
-          rightLinks={<HeaderLinks />}
+          rightLinks={<HeaderLinks {...props} />}
           {...rest}
         />
       </div>
+      
       <div>
         <Box display="flex" p={0} style={{ width: '100%' }}>
           <Box p={0} style={{ width: state.project != null ? '50vw' : '100%', height: 'calc(100vh - 65px)', overflow: 'hidden' }}>
@@ -157,41 +206,48 @@ export default function ProjectsPage(props) {
               {...state.viewport}
               width="100%"
               height="100%"
-              mapStyle="mapbox://styles/mapbox/streets-v11"
-              onViewportChange={_onViewportChange}
-              mapboxApiAccessToken={MAPBOX_TOKEN}
+              mapStyle={state.mapStyle}
+              onViewportChange={onViewportChange}
+              mapboxApiAccessToken={Constants.MAPBOX_TOKEN}
               interactiveLayerIds={[clusterLayer.id, unclusteredPointLayer.id]}
-              onClick={handleMapClick}
+              onClick={handleMapOnClick} onHover={handleMapOnHover}
             >
+              <Source
+                type="geojson"
+                data={{
+                  type: 'FeatureCollection',
+                  features: state.projectGeoms
+                }}
+                ref={mbPolygonSourceRef}
+              >
+                <Layer {...geomPointLayer} filter={state.mapGeomPointFilter} paint={state.mapGeomPointPaint} />
+                <Layer {...geomPolygonLayer} filter={state.mapGeomPolygonFilter} paint={state.mapGeomPolygonPaint} />
+                <Layer {...geomLineLayer} filter={state.mapGeomLineFilter} paint={state.mapGeomLinePaint} />
+              </Source>
+
               <Source
                 type="geojson"
                 data={{
                   type: 'FeatureCollection',
                   features: state.visibleProjects
                 }}
-                cluster={true}
+                cluster={false}
                 clusterMaxZoom={14}
-                clusterRadius={50}
-                ref={sourceRef}
+                clusterRadius={20}
+                ref={mbProjectSourceRef}
               >
+                <Layer {...unclusteredSymbolLayer} filter={state.mapMarkerFilter} paint={state.mapMarkerPaint} />
                 <Layer {...clusterLayer} />
                 <Layer {...clusterCountLayer} />
-                <Layer {...unclusteredPointLayer} />
               </Source>
 
-{/*               <Source
-                type="geojson"
-                data={{
-                  type: 'FeatureCollection',
-                  features: state.visibleProjectGeoms
-                }} 
-                ref={sourceRef}
-              >
-                 <Layer {...geomLineLayer} />
-                 <Layer {...geomPoingLayer} />
-                 <Layer {...geomPolygonLayer} />
-              </Source>
- */}
+              <div style={{
+                position: 'absolute', padding: '10px', top: '2px',
+                right: (projectId > 0) ? '0px' : 'calc(20vw + 10px)'
+              }}>
+                <NavigationControl />
+              </div>
+
             </MapGL>
           </Box>
           <DetailsPanel {...detailsProps} />
@@ -200,11 +256,37 @@ export default function ProjectsPage(props) {
         <ResultsPanel {...resultsProps} />
         <FilterPanel {...filtersProps} />
 
+        <Paper elevation={2} style={{
+          position: 'absolute', bottom: (projectId > 0) ? '34px' : '24px',
+          left: (projectId > 0) ? '10px' : 'calc(250px + 20px)',
+          width: '75px', height: '75px', borderRadius: '5px', overflow: 'hidden'
+        }}>
+          {
+            state.mapStyle == Constants.MAPBOX_STYLE_STREET
+              ?
+              <ButtonBase onClick={onMapStyleClick}>
+                <img src={Constants.ROOT_URL + 'images/mini-satellite2.png'} width="75px" />
+                <span style={{
+                  position: 'absolute', bottom: '5px', left: '5px', color: 'white',
+                  fontSize: '1em', fontWeight: 'bold'
+                }}>Satellite</span>
+              </ButtonBase>
+
+              :
+              <ButtonBase onClick={onMapStyleClick}>
+                <img src={Constants.ROOT_URL + 'images/mini-map2.png'} width="75px" />
+                <span style={{
+                  position: 'absolute', bottom: '5px', left: '5px', color: 'white',
+                  fontSize: '1em', fontWeight: 'bold'
+                }}>Map</span>
+              </ButtonBase>
+          }
+        </Paper>
 
       </div>
 
 
-    </Box>
+    </Box >
 
   );
 
@@ -219,8 +301,9 @@ const clusterLayer = {
   paint: {
     //'circle-color': ['step', ['get', 'point_count'], '#51bbd6', 5, '#f1f075', 15, '#f28cb1'],
     'circle-color': '#9ABFC2',
-    'circle-radius': ['step', ['get', 'point_count'], 25, 10, 40, 20, 50],
-    'circle-stroke-width': 1,
+    //'circle-radius': ['step', ['get', 'point_count'], 20, 10, 30, 20, 40],
+    'circle-radius': ['step', ['get', 'point_count'], 15, 10, 25, 20, 35],
+    'circle-stroke-width': 2,
     'circle-stroke-color': '#fff'
   }
 };
@@ -237,75 +320,63 @@ const clusterCountLayer = {
   }
 };
 
+const unclusteredSymbolLayer = {
+  id: 'unclustered-point',
+  type: 'symbol',
+  source: 'projectdata',
+  layout: {
+    'icon-image': ['concat', 'maki-marker-stroked-15-', ['get', 'status']],
+    //'icon-image': 'maki-marker-stroked-15-1',
+    'icon-size': 1.5,
+    'icon-anchor': 'bottom',
+    //'icon-ignore-placement': true,
+    'icon-allow-overlap': true,
+    'text-field': ['get', 'name'],
+    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+    'text-size': 12,
+    //'text-anchor': 'top',
+    //'text-offset': [0,-.2],
+    'text-variable-anchor': ['top', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'],
+    'text-radial-offset': 0.15,
+    'text-optional': true,
+  },
+};
+
 const unclusteredPointLayer = {
   id: 'unclustered-point',
   type: 'circle',
   source: 'projectdata',
   filter: ['!', ['has', 'point_count']],
   layout: {
-    //'text-field': 'name',
-    //'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-    //'text-size': 14
+    'visibility': 'visible'
   },
   paint: {
     'circle-color': [
       'match',
       ['get', 'status'],
-      STATUS_PLAN, STATUS_COLORS[STATUS_PLAN],
-      STATUS_DESIGN, STATUS_COLORS[STATUS_DESIGN],
-      STATUS_IMPLEMENT, STATUS_COLORS[STATUS_IMPLEMENT],
-      STATUS_LIVE, STATUS_COLORS[STATUS_LIVE],
-      STATUS_ARCHIVE, STATUS_COLORS[STATUS_ARCHIVE],
-      /* other */ STATUS_COLORS[0]
+      Constants.STATUS_PLAN, Constants.STATUS_COLORS[Constants.STATUS_PLAN],
+      Constants.STATUS_DESIGN, Constants.STATUS_COLORS[Constants.STATUS_DESIGN],
+      Constants.STATUS_IMPLEMENT, Constants.STATUS_COLORS[Constants.STATUS_IMPLEMENT],
+      Constants.STATUS_LIVE, Constants.STATUS_COLORS[Constants.STATUS_LIVE],
+      Constants.STATUS_ARCHIVE, Constants.STATUS_COLORS[Constants.STATUS_ARCHIVE],
+      Constants.STATUS_COLORS[0]
     ],
-    'circle-radius': 10,
-    'circle-stroke-width': 1,
+    'circle-radius': 6,
+    'circle-stroke-width': 2,
     'circle-stroke-color': '#fff'
   }
 };
 
+
 const geomPolygonLayer = {
-  id: 'geoms-polygon',
   type: 'fill',
   source: 'projectgeom',
-  filter: ["==", ["geometry-type"], "Polygon"],
-  paint: {
-    'fill-color': {
-      property: 'percentile',
-      stops: [
-        [0, '#3288bd'],
-        [1, '#66c2a5'],
-        [2, '#abdda4'],
-        [3, '#e6f598'],
-        [4, '#ffffbf'],
-        [5, '#fee08b'],
-        [6, '#fdae61'],
-        [7, '#f46d43'],
-        [8, '#d53e4f']
-      ]
-    },
-    'fill-opacity': 0.8
-  }
 };
 const geomPointLayer = {
-  id: 'geoms-point',
   type: 'circle',
   source: 'projectgeom',
-  filter: ["==", ["geometry-type"], "Point"],
-  paint: {
-    'circle-color': 'red',
-    'circle-radius': 10,
-    'circle-stroke-width': 1,
-    'circle-stroke-color': '#fff'
-  }
 };
 const geomLineLayer = {
-  id: 'geoms-line',
   source: 'projectgeom',
   type: 'line',
-  filter: ["==", ["geometry-type"], "LineString"],
-  paint: {
-    'line-width': 5,
-    'line-color': '#0080ef'
-  }
 };

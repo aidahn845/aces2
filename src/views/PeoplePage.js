@@ -48,7 +48,7 @@ export default function PeoplePage(props) {
       <Header
         color="transparent"
         brand="FL A&middot;C&middot;E&middot;S"
-        rightLinks={<HeaderLinks />}
+        rightLinks={<HeaderLinks {...props} />}
         fixed
         changeColorOnScroll={{
           height: 200,

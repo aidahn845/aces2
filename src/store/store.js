@@ -1,9 +1,9 @@
 import React from "react";
-import {
-  LOGIN_USER, LOGOUT_USER, FETCH_PROJECTS_DATA, FETCH_USERS_DATA, VIEW_PROJECTS, VIEW_ONE_PROJECT,
-  FETCH_PROJECTS_GEOM, ADD_PROJECT_FILTER, REMOVE_PROJECT_FILTER, RESET_PROJECT_FILTERS, SET_VIEWPORT
-} from "./actionTypes"
-import { ROOT_URL, FILTER_NAME_CATEGORY, FILTER_NAME_MODE, FILTER_NAME_STATUS, FILTER_NAME_DISTRICT } from "../constants"
+import { LinearInterpolator, WebMercatorViewport } from 'react-map-gl';
+import bbox from '@turf/bbox';
+
+import * as Constants from "../constants"
+import { dashboardUsers as peopleDB } from "../views/Dashboard/data"
 
 export const Store = React.createContext("");
 
@@ -20,22 +20,30 @@ const initialViewport = {
   zoom: 6,
   bearing: 0,
   pitch: 0,
-  transitionDuration: 500
+  transitionDuration: Constants.MAPBOX_TRANSITION_DURATION
 };
 
 const initialState = {
+  userProfile: null,
   users: [],
-  user: null,
   projects: [],
-  projectgeoms: [],
+  projectGeoms: [],
   projectFilters: [],
   visibleProjects: [],
-  visibleProjectGeoms: [],
   project: null,
-  viewport: initialViewport
+  viewport: initialViewport,
+  mapStyle: Constants.MAPBOX_STYLE_STREET,
+  mapMarkerFilter: Constants.MAPBOX_MARKER_BASE_FILTER,
+  mapMarkerPaint: Constants.MAPBOX_SYMBOL_PAINT_MAP,
+  mapGeomPointFilter: ['all', Constants.MAPBOX_GEOM_POINT_BASE_FILTER, Constants.MAPBOX_GEOM_BASE_FILTER],
+  mapGeomPointPaint: Constants.MAPBOX_GEOM_POINT_PAINT_MAP,
+  mapGeomLineFilter: ['all', Constants.MAPBOX_GEOM_LINE_BASE_FILTER, Constants.MAPBOX_GEOM_BASE_FILTER],
+  mapGeomLinePaint: Constants.MAPBOX_GEOM_LINE_PAINT_MAP,
+  mapGeomPolygonFilter: ['all', Constants.MAPBOX_GEOM_POLYGON_BASE_FILTER, Constants.MAPBOX_GEOM_BASE_FILTER],
+  mapGeomPolygonPaint: Constants.MAPBOX_GEOM_POLYGON_PAINT_MAP,
 };
 
-const peopleDB = [
+/*const peopleDB = [
   {
     id: 1000, name: 'Vanko Antonov',
   }, {
@@ -63,15 +71,24 @@ const peopleDB = [
   }, {
     id: 1012, name: 'Lori Palaio',
   }
-];
+];*/
 
-function devPackProjectData(projects) {
+
+function processProjectData(projects) {
+  projects.sort((a, b) => {
+    if (a.properties.name < b.properties.name)
+      return -1;
+    if (a.properties.name > b.properties.name)
+      return 1;
+    return 0;
+  });
+
   return projects.map((proj, index) => {
 
     // img url
     var imgURL = proj.properties.desc_photo;
     if (imgURL && !imgURL.toLowerCase().startsWith('http')) {
-      proj.properties.desc_photo = ROOT_URL + proj.properties.desc_photo;
+      proj.properties.desc_photo = Constants.ROOT_URL + proj.properties.desc_photo;
     }
 
     // people
@@ -128,45 +145,100 @@ function devPackProjectData(projects) {
 function reducer(state, action) {
   var newFilters;
 
-  console.log('reducer: ' + action.type);
+  //console.log('reducer: ' + action.type);
 
   switch (action.type) {
-    case FETCH_PROJECTS_DATA:
+    case Constants.FETCH_PROJECTS_DATA:
       // payload = projects
 
-      let projects = devPackProjectData(action.payload);
+      let projects = processProjectData(action.payload);
 
       return {
         ...state, projects: projects, visibleProjects: Array.from(projects)
       };
-    case FETCH_PROJECTS_GEOM:
+    case Constants.FETCH_PROJECTS_GEOM:
       // payload = projects
       return {
-        ...state, projectgeoms: action.payload, visibleProjectGeoms: Array.from(action.payload)
+        ...state, projectGeoms: action.payload
       };
-    case SET_VIEWPORT:
+    case Constants.SET_VIEWPORT:
       return {
         ...state, viewport: action.payload
       };
-    case VIEW_PROJECTS:
+    case Constants.TOGGLE_MAP_STYLE:
+      var mapStyle = (state.mapStyle === Constants.MAPBOX_STYLE_STREET) ?
+        Constants.MAPBOX_STYLE_SATELLITE : Constants.MAPBOX_STYLE_STREET;
+
+      var symbolPaint = (state.mapStyle === Constants.MAPBOX_STYLE_STREET) ?
+        Constants.MAPBOX_SYMBOL_PAINT_SATELLITE : Constants.MAPBOX_SYMBOL_PAINT_MAP;
+
+      var geomPointPaint = (state.mapStyle === Constants.MAPBOX_STYLE_STREET) ?
+        Constants.MAPBOX_GEOM_POINT_PAINT_SATELLITE : Constants.MAPBOX_GEOM_POINT_PAINT_MAP;
+
+      var geomLinePaint = (state.mapStyle === Constants.MAPBOX_STYLE_STREET) ?
+        Constants.MAPBOX_GEOM_LINE_PAINT_SATELLITE : Constants.MAPBOX_GEOM_LINE_PAINT_MAP;
+
+      var geomPolygonPaint = (state.mapStyle === Constants.MAPBOX_STYLE_STREET) ?
+        Constants.MAPBOX_GEOM_POLYGON_PAINT_SATELLITE : Constants.MAPBOX_GEOM_POLYGON_PAINT_MAP;
+
       return {
-        ...state, project: null, viewport: initialViewport
+        ...state,
+        mapStyle: mapStyle,
+        mapMarkerPaint: symbolPaint,
+        mapGeomLinePaint: geomLinePaint,
+        mapGeomPointPaint: geomPointPaint,
+        mapGeomPolygonPaint: geomPolygonPaint
       };
-    case VIEW_ONE_PROJECT:
-      // payload = project
-      // update viewport
-      let proj = action.payload;
-      let vp = {
+    case Constants.TOGGLE_GEOM_VISIBILITY:
+      let projId = action.payload;
+      console.log(action.type + ' ' + action.payload);
+      if (projId && projId > 0) {
+        return {
+          ...state,
+          mapGeomPointFilter: ["all", Constants.MAPBOX_GEOM_POINT_BASE_FILTER, ["==", ["get", "id"], projId]],
+          mapGeomLineFilter: ["all", Constants.MAPBOX_GEOM_LINE_BASE_FILTER, ["==", ["get", "id"], projId]],
+          mapGeomPolygonFilter: ["all", Constants.MAPBOX_GEOM_POLYGON_BASE_FILTER, ["==", ["get", "id"], projId]]
+        };
+      }
+      return {
+        ...state,
+        mapGeomPointFilter: ['all', Constants.MAPBOX_GEOM_POINT_BASE_FILTER, Constants.MAPBOX_GEOM_BASE_FILTER],
+        mapGeomLineFilter: ['all', Constants.MAPBOX_GEOM_LINE_BASE_FILTER, Constants.MAPBOX_GEOM_BASE_FILTER],
+        mapGeomPolygonFilter: ['all', Constants.MAPBOX_GEOM_POLYGON_BASE_FILTER, Constants.MAPBOX_GEOM_BASE_FILTER],
+      };
+    case Constants.VIEW_PROJECTS:
+      // reset viewport
+      let newVp = {
         ...state.viewport,
-        longitude: proj.geometry.coordinates[0],
-        latitude: proj.geometry.coordinates[1],
-        zoom: 14,
-        transitionDuration: 500
+        latitude: initialViewport.latitude,
+        longitude: initialViewport.longitude,
+        zoom: initialViewport.zoom,
+        bearing: initialViewport.bearing,
+        pitch: initialViewport.pitch
       };
       return {
-        ...state, project: action.payload, viewport: vp
+        ...state,
+        project: null,
+        viewport: newVp,
+        mapMarkerFilter: Constants.MAPBOX_MARKER_BASE_FILTER,
+        mapGeomPointFilter: ['all', Constants.MAPBOX_GEOM_POINT_BASE_FILTER, Constants.MAPBOX_GEOM_BASE_FILTER],
+        mapGeomLineFilter: ['all', Constants.MAPBOX_GEOM_LINE_BASE_FILTER, Constants.MAPBOX_GEOM_BASE_FILTER],
+        mapGeomPolygonFilter: ['all', Constants.MAPBOX_GEOM_POLYGON_BASE_FILTER, Constants.MAPBOX_GEOM_BASE_FILTER],
       };
-    case ADD_PROJECT_FILTER:
+    case Constants.VIEW_ONE_PROJECT:
+      // payload = project
+      // update viewport (zoom to geom)
+      let proj = action.payload;
+      return {
+        ...state,
+        project: action.payload,
+        viewport: getProjectViewport(proj.properties.id, state),
+        mapMarkerFilter: ["all", Constants.MAPBOX_MARKER_BASE_FILTER, ["==", ["get", "id"], proj.properties.id]],
+        mapGeomPointFilter: ["all", Constants.MAPBOX_GEOM_POINT_BASE_FILTER, ["==", ["get", "id"], proj.properties.id]],
+        mapGeomLineFilter: ["all", Constants.MAPBOX_GEOM_LINE_BASE_FILTER, ["==", ["get", "id"], proj.properties.id]],
+        mapGeomPolygonFilter: ["all", Constants.MAPBOX_GEOM_POLYGON_BASE_FILTER, ["==", ["get", "id"], proj.properties.id]]
+      };
+    case Constants.ADD_PROJECT_FILTER:
       // payload = filter
       newFilters = [...state.projectFilters, action.payload];
       return {
@@ -175,14 +247,14 @@ function reducer(state, action) {
         visibleProjects: filterProjects(state.projects, newFilters)
       };
       return state;
-    case REMOVE_PROJECT_FILTER:
+    case Constants.REMOVE_PROJECT_FILTER:
       // payload = updated filters
       return {
         ...state,
         projectFilters: action.payload,
         visibleProjects: filterProjects(state.projects, action.payload)
       };
-    case RESET_PROJECT_FILTERS:
+    case Constants.RESET_PROJECT_FILTERS:
       // payload = null
       return {
         ...state,
@@ -262,23 +334,23 @@ function projectIsMatch(project, filter) {
   var vals;
 
   switch (filter.name) {
-    case FILTER_NAME_CATEGORY: // one or more
+    case Constants.FILTER_NAME_CATEGORY: // one or more
       projectData = project.properties.category;
       vals = projectData.toLowerCase().split(';');
       if (vals.includes(filter.value.toLowerCase()))
         return true;
       break;
-    case FILTER_NAME_STATUS: // number
+    case Constants.FILTER_NAME_STATUS: // number
       if (filter.value == project.properties.status)
         return true;
       break;
-    case FILTER_NAME_MODE: // one or more
+    case Constants.FILTER_NAME_MODE: // one or more
       projectData = project.properties.mode;
       vals = projectData.toLowerCase().split(';');
       if (vals.includes(filter.value.toLowerCase()))
         return true;
       break;
-    case FILTER_NAME_DISTRICT: // one or more
+    case Constants.FILTER_NAME_DISTRICT: // one or more
       projectData = project.properties.district;
       vals = projectData.toLowerCase().split(';');
       if (vals.includes(filter.value.toLowerCase()))
@@ -289,6 +361,54 @@ function projectIsMatch(project, filter) {
   }
   return false;
 }
+
+
+function getProjectViewport(projectId, state) {
+  // find project geom
+  var feature = state.projectGeoms.find(function (element) {
+    return element.properties.id == projectId;
+  });
+
+  if (feature == undefined)
+    return { ...state.viewport };
+
+  // calculate bbox of geom
+  const [minLng, minLat, maxLng, maxLat] = bbox(feature);
+
+  // assume new viewport is half width
+  const futureVp = {
+    ...state.viewport,
+    width: state.viewport.width / 2
+  }
+
+  // construct a viewport instance from the current state
+  let vp = null;
+  try {
+    vp = new WebMercatorViewport(futureVp);
+  } catch (err) {
+    console.error(err);
+  }
+
+  if (vp == null) return;
+
+  const { longitude, latitude, zoom } = vp.fitBounds([[minLng, minLat], [maxLng, maxLat]], {
+    padding: 40
+  });
+
+  return ({
+    ...state.viewport,
+    //width: state.viewport.width,
+    //height: state.viewport.height,
+    longitude,
+    latitude,
+    zoom,
+    /*transitionInterpolator: new LinearInterpolator({
+      around: [event.offsetCenter.x, event.offsetCenter.y]
+    }),*/
+    transitionDuration: Constants.MAPBOX_TRANSITION_DURATION
+  });
+}
+
 
 export function StoreProvider(props) {
   const [state, dispatch] = React.useReducer(reducer, initialState);

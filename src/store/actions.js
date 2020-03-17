@@ -1,27 +1,26 @@
-import {LOGIN_USER, LOGOUT_USER, FETCH_PROJECTS_DATA, FETCH_USERS_DATA, FETCH_PROJECTS_GEOM,
-  VIEW_PROJECTS, VIEW_ONE_PROJECT, ADD_PROJECT_FILTER, REMOVE_PROJECT_FILTER, RESET_PROJECT_FILTERS, SET_VIEWPORT} from "./actionTypes"
-import {ROOT_URL} from "../constants"
+import * as Constants from "../constants"
 
-// payload: projects
-const PROJECTS_URL = ROOT_URL + "json/projects_data.geojson";
+// payload: projects, geojson, project data is features array; by properties.id
+const PROJECTS_URL = Constants.ROOT_URL + "json/projects_data.json";
 export const fetchProjectsData = async dispatch => {
   //console.log(FETCH_PROJECTS_DATA + " action started");
 
   const data = await fetch(PROJECTS_URL);
   const dataJSON = await data.json();
   return dispatch({
-    type: FETCH_PROJECTS_DATA,
+    type: Constants.FETCH_PROJECTS_DATA,
     payload: dataJSON.features
   });
 };
 
-const GEOM_URL = ROOT_URL + "json/projects_geom.geojson";
+// geojson, array of features, 1 per project; by properties.id
+const GEOM_URL = Constants.ROOT_URL + "json/projects_geom0.json";
 export const fetchProjectsGeom = async dispatch => {
   const data = await fetch(GEOM_URL);
 
   const dataJSON = await data.json();
   return dispatch({
-    type: FETCH_PROJECTS_GEOM,
+    type: Constants.FETCH_PROJECTS_GEOM,
     payload: dataJSON.features
   });
 };
@@ -36,13 +35,13 @@ export const toggleProjectFilters = (filter, state, dispatch) => {
   });
 
   let dispatchObj = {
-    type: ADD_PROJECT_FILTER,
+    type: Constants.ADD_PROJECT_FILTER,
     payload: filter
   };
 
   if (filterActive != undefined) {
     dispatchObj = {
-      type: REMOVE_PROJECT_FILTER,
+      type: Constants.REMOVE_PROJECT_FILTER,
       payload: state.projectFilters.filter(function(element) { 
         return element.name != filter.name || element.value != filter.value;
       })
@@ -69,7 +68,7 @@ export const viewOneProject = (projectId, state, dispatch) => {
   });
 
   let dispatchObj = {
-    type: VIEW_ONE_PROJECT,
+    type: Constants.VIEW_ONE_PROJECT,
     payload: project
   };
   return dispatch(dispatchObj);
@@ -77,7 +76,7 @@ export const viewOneProject = (projectId, state, dispatch) => {
 
 export const viewProjects = (state, dispatch) => {
   let dispatchObj = {
-    type: VIEW_PROJECTS,
+    type: Constants.VIEW_PROJECTS,
     payload: null
   };
   return dispatch(dispatchObj);
@@ -85,8 +84,25 @@ export const viewProjects = (state, dispatch) => {
 
 export const setViewport = (viewport, state, dispatch) => {
   let dispatchObj = {
-    type: SET_VIEWPORT,
+    type: Constants.SET_VIEWPORT,
     payload: viewport
+  };
+  return dispatch(dispatchObj);
+};
+
+export const toggleMapStyle = (state, dispatch) => {
+  let dispatchObj = {
+    type: Constants.TOGGLE_MAP_STYLE,
+    payload: null
+  };
+  return dispatch(dispatchObj);
+};
+
+// projectId = 0 for hide all
+export const toggleGeomVisibility = (projectId, state, dispatch) => {
+  let dispatchObj = {
+    type: Constants.TOGGLE_GEOM_VISIBILITY,
+    payload: projectId
   };
   return dispatch(dispatchObj);
 };

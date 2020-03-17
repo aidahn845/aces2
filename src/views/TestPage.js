@@ -1,112 +1,114 @@
-import React, { Fragment } from "react";
-import { render } from 'react-dom';
-import MapGL, { Source, Layer } from "react-map-gl";
-import { useParams } from "react-router-dom";
-
-// @material-ui/core components
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-// core components
-import Header from "components/Header/Header.js";
-import HeaderLinks from "components/Header/HeaderLinks.js";
-
-import styles from "assets/jss/material-kit-react/views/projectsPage.js";
-
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
-import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import { List, ListItem, Button } from '@material-ui/core';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import MailIcon from '@material-ui/icons/Mail';
-import MenuIcon from '@material-ui/icons/Menu';
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import Card from "components/Card/Card.js";
-import { pink, red, lightBlue, grey, lightGreen, blueGrey } from "@material-ui/core/colors";
-import SearchIcon from '@material-ui/icons/Search';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import { Store } from "../store/store"
-import { fetchProjectsData, toggleProjectFilters, viewProjects, viewOneProject, setViewport } from "../store/actions"
-import { ArrowBack } from "@material-ui/icons";
-import DetailsPanel from "./ProjectsPage/DetailsPanel";
-
-import {
-  MAPBOX_TOKEN, HEADER_TITLE, STATUS_COLORS, STATUS_PLAN, STATUS_DESIGN, STATUS_IMPLEMENT,
-  STATUS_LIVE, STATUS_ARCHIVE
-} from "../constants"
-
-
-const useStyles = makeStyles(styles);
-
-export default function TestPage(props) {
-  const classes = useStyles();
-  const { ...rest } = props;
-
-  const { state, dispatch } = React.useContext(Store);
-
-  React.useEffect(
-    () => {
-      state.projects.length === 0 && fetchProjectsData(dispatch);
-    },
-    [state]
-  );
-
-  const detailsProps = {
-    state: { state, dispatch },
-    viewProjects
-  };
-  const resultsProps = {
-    projects: state.projects,
-    visibleProjects: state.visibleProjects,
-    state: { state, dispatch },
-    viewOneProject,
-    ...rest
-  };
-
-  const handleProjectClick = (project) => {
-    viewOneProject(project.properties.id, state, dispatch);
-  };
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
   return (
-    <Box>
-      <div style={{
-        position: 'relative', width: '100%', height: "65px", overflow: 'hidden', boxShadow:
-          "0 4px 18px 0px rgba(0, 0, 0, 0.12), 0 7px 10px -5px rgba(0, 0, 0, 0.15)"
-      }}>
-        <Header
-          color="dark"
-          fixed
-          brand="FL A&middot;C&middot;E&middot;S"
-          rightLinks={<HeaderLinks />}
-          {...rest}
-        />
-      </div>
-      <Box display="flex">
-{/*           <List style={{ boxShadow: '0', padding: '0', margin: '5px 0 0 0', width: '200px' }}>
-            {
-              state.projects.map((proj, index) => {
-                return (
-                  <Fragment>
-                    {index > 0 ? <Divider /> : ''}
-                    <ListItem style={{ boxShadow: '0', padding: '5px 10px', margin: '0' }} key={proj.properties.id}>
-                      <Button onClick={() => handleProjectClick(proj)}>
-                        {proj.properties.id} - {proj.properties.name}
-                      </Button>
-                    </ListItem>
-                  </Fragment>
-                );
-              })
-            }
-          </List>
- */}          <DetailsPanel {...detailsProps} />
-      </Box>
-    </Box>
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box p={3}>{children}</Box>}
+    </Typography>
   );
 }
 
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `vertical-tab-${index}`,
+    'aria-controls': `vertical-tabpanel-${index}`,
+  };
+}
+
+function LinkTab(props) {
+  return (
+    <Tab
+      component="a"
+      onClick={event => {
+        event.preventDefault();
+      }}
+      {...props}
+    />
+  );
+}
+
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+    display: 'flex',
+    height: '100%',
+  },
+  tabs: {
+    borderRight: `1px solid ${theme.palette.divider}`,
+    textAlign: 'left'
+  },
+}));
+
+export default function VerticalTabs() {
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  return (
+    <div className={classes.root}>
+      <Tabs
+        orientation="vertical"
+        //variant="scrollable"
+        value={value}
+        onChange={handleChange}
+        aria-label=""
+        className={classes.tabs}
+      >
+        <LinkTab label="Projects" href="/test/1" {...a11yProps(0)} />
+        <LinkTab label="Users" href="/test/2" {...a11yProps(1)} />
+        <LinkTab label="Item Three" href="/test/3" {...a11yProps(2)} />
+        <LinkTab label="Item Four" href="/test/4" {...a11yProps(3)} />
+        <LinkTab label="Item Five" href="/test/5" {...a11yProps(4)} />
+        <LinkTab label="Item Six" href="/test/6" {...a11yProps(5)} />
+        <LinkTab label="Item Seven" href="/test/7" {...a11yProps(6)} />
+      </Tabs>
+      <TabPanel value={value} index={0}>
+        Item One
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        Item Two
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        Item Three
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        Item Four
+      </TabPanel>
+      <TabPanel value={value} index={4}>
+        Item Five
+      </TabPanel>
+      <TabPanel value={value} index={5}>
+        Item Six
+      </TabPanel>
+      <TabPanel value={value} index={6}>
+        Item Seven
+      </TabPanel>
+    </div>
+  );
+}

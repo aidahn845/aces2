@@ -13,13 +13,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import { List, ListItem, Avatar } from "@material-ui/core";
 
 // @material-ui/icons
-import { Apps, CloudDownload, AccountCircle, Person } from "@material-ui/icons";
+import { Apps, CloudDownload, AccountCircle, Person, Settings } from "@material-ui/icons";
 
 // core components
 import CustomDropdown from "components/CustomDropdown/CustomDropdown.js";
-import {Button} from "components/CustomButtons/Button";
+import { Button } from "components/CustomButtons/Button";
 
 import { ROOT_URL } from "../../constants"
+
+import { useUserState, useUserDispatch, loginUser, signOut } from "../../context/UserContext";
 
 
 import styles from "assets/jss/material-kit-react/components/headerLinksStyle.js";
@@ -27,13 +29,12 @@ import styles from "assets/jss/material-kit-react/components/headerLinksStyle.js
 const useStyles = makeStyles(styles);
 
 const useStyles2 = makeStyles(theme => ({
-  small: {
+  avatar: {
     width: theme.spacing(4),
     height: theme.spacing(4),
   },
-  large: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
+  active: {
+    backgroundColor: '#F3A240'
   },
 }));
 
@@ -54,9 +55,17 @@ export default function HeaderLinks(props) {
   };
 
 
+  const { isAuthenticated, isAdmin, profile } = useUserState();
+  const userDispatch = useUserDispatch();
+
   const handleAvatarClick = () => {
-    props.history.push(ROOT_URL + "login");
+    if (isAuthenticated) {
+      props.history.push(ROOT_URL + "dashboard/projects");
+    } else {
+      props.history.push(ROOT_URL + "login");
+    }
   };
+
 
   return (
     <List className={classes.list}>
@@ -92,13 +101,16 @@ export default function HeaderLinks(props) {
       </ListItem>
 
       <ListItem className={classes.listItem}>
-        <NavLink to={ROOT_URL + "login"}>
-        <IconButton style={{padding: '0', margin: '7px 0 10px 30px'}}>
-          <Avatar className={classes2.small}>
-            <Person />
-          </Avatar>
+        <IconButton style={{ padding: '0', margin: '7px 0 10px 30px' }} onClick={handleAvatarClick}>
+          {
+            isAuthenticated ? (
+              isAdmin ? <Avatar className={classes2.avatar} style={{ backgroundColor: '#FF8C00' }}>A</Avatar>
+                : <Avatar src={ROOT_URL + 'images/user' + profile.id + '.jpg'}
+                  className={classes2.avatar}></Avatar>
+            )
+              : <Avatar className={classes2.avatar}><Person /></Avatar>
+          }
         </IconButton>
-        </NavLink>
         {/*         <CustomDropdown
           noLiPadding
           buttonText=""

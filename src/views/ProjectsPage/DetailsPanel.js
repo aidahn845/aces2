@@ -289,7 +289,7 @@ export default function DetailsPanel(props) {
         }
       </div>
 
-      <h4 style={{ margin: '30px 0px 0 0px', fontWeight: 'bold' }}>Team Members</h4>
+      <h4 style={{ margin: '30px 0px 0 0px', fontWeight: 'bold' }}>Project Team</h4>
 
       <Grid container>
         {
@@ -319,7 +319,7 @@ export default function DetailsPanel(props) {
       </Grid>
 
 
-      <h4 style={{ margin: '30px 0px 20px 0px', fontWeight: 'bold' }}>Data</h4>
+      <h4 style={{ margin: '30px 0px 20px 0px', fontWeight: 'bold' }}>Project Data</h4>
 
       <GridContainer>
         <GridItem xs={12} sm={12} md={6}>

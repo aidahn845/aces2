@@ -39,7 +39,7 @@ export default function Components(props) {
     <div>
       <Header
         brand="FL ACES"
-        rightLinks={<HeaderLinks />}
+        rightLinks={<HeaderLinks {...props} />}
         fixed
         color="transparent"
         changeColorOnScroll={{

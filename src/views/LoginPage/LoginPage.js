@@ -1,8 +1,7 @@
 import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Icon from "@material-ui/core/Icon";
+import { InputAdornment, CircularProgress, Icon, TextField } from "@material-ui/core";
 // @material-ui/icons
 import Email from "@material-ui/icons/Email";
 import People from "@material-ui/icons/People";
@@ -19,83 +18,61 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 
+import { withRouter } from "react-router-dom";
+import { useUserDispatch, loginUser } from "../../context/UserContext";
+
+
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
-
-import image from "assets/img/bg7.jpg";
-
 const useStyles = makeStyles(styles);
 
 export default function LoginPage(props) {
-  const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
-  setTimeout(function() {
-    setCardAnimation("");
-  }, 700);
+
   const classes = useStyles();
   const { ...rest } = props;
+
+  // global
+  var userDispatch = useUserDispatch();
+
+  // local
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState(null);
+  const [activeTabId, setActiveTabId] = React.useState(0);
+  const [nameValue, setNameValue] = React.useState("");
+  const [loginValue, setLoginValue] = React.useState("");
+  const [passwordValue, setPasswordValue] = React.useState("");
+
+  const handleLoginChange = event => {
+    setLoginValue(event.target.value);
+  };
+  const handlePasswordChange = event => {
+    setPasswordValue(event.target.value);
+  };
+
+  const handleLoginSubmit = event => {
+    loginUser(userDispatch, loginValue, passwordValue, props.history, setIsLoading, setError, )
+  };
+
   return (
     <div>
       <Header
         absolute
         color="dark"
         brand="FL A&middot;C&middot;E&middot;S"
-        rightLinks={<HeaderLinks />}
+        rightLinks={<HeaderLinks {...props} />}
         {...rest}
       />
       <div>
         <div className={classes.container}>
           <GridContainer justify="center">
-            <GridItem xs={12} sm={12} md={4}>
-              <Card className={classes[cardAnimaton]}>
+            <GridItem xs={12} sm={12} md={6}>
+              <Card>
                 <form className={classes.form}>
                   <CardHeader color="primary" className={classes.cardHeader}>
-                    <h4>Login</h4>
-                    <div className={classes.socialLine}>
-                      <Button
-                        justIcon
-                        href="#pablo"
-                        target="_blank"
-                        color="transparent"
-                        onClick={e => e.preventDefault()}
-                      >
-                        <i className={"fab fa-twitter"} />
-                      </Button>
-                      <Button
-                        justIcon
-                        href="#pablo"
-                        target="_blank"
-                        color="transparent"
-                        onClick={e => e.preventDefault()}
-                      >
-                        <i className={"fab fa-facebook"} />
-                      </Button>
-                      <Button
-                        justIcon
-                        href="#pablo"
-                        target="_blank"
-                        color="transparent"
-                        onClick={e => e.preventDefault()}
-                      >
-                        <i className={"fab fa-google-plus-g"} />
-                      </Button>
-                    </div>
+                    <h3>Login</h3>
+
                   </CardHeader>
                   <CardBody>
-                    <CustomInput
-                      labelText="First Name..."
-                      id="first"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                      inputProps={{
-                        type: "text",
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <People className={classes.inputIconsColor} />
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                    <CustomInput
+                    {/* <CustomInput
                       labelText="Email..."
                       id="email"
                       formControlProps={{
@@ -109,6 +86,8 @@ export default function LoginPage(props) {
                           </InputAdornment>
                         )
                       }}
+                      value={loginValue}
+                      onChange={handleLoginChange}
                     />
                     <CustomInput
                       labelText="Password"
@@ -127,19 +106,79 @@ export default function LoginPage(props) {
                         ),
                         autoComplete: "off"
                       }}
+                      value={passwordValue}
+                      onChange={handlePasswordChange}
+                    /> */}
+                    <TextField
+                      id="email"
+                      InputProps={{
+                        type: "email",
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Email className={classes.inputIconsColor} />
+                          </InputAdornment>
+                        )
+                      }}
+                      value={loginValue}
+                      onChange={handleLoginChange}
+                      margin="normal"
+                      placeholder="Email Address"
+                      type="email"
+                      fullWidth
+                    />
+
+                    <TextField
+                      id="password"
+                      InputProps={{
+                        type: "password",
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Icon className={classes.inputIconsColor}>
+                              lock_outline
+                            </Icon>
+                          </InputAdornment>
+                        ),
+                        autoComplete: "off"
+                      }}
+                      value={passwordValue}
+                      onChange={handlePasswordChange}
+                      margin="normal"
+                      placeholder="Password"
+                      type="password"
+                      fullWidth
                     />
                   </CardBody>
                   <CardFooter className={classes.cardFooter}>
-                    <Button simple color="primary" size="lg">
-                      Register
-                    </Button>
+                    {isLoading ? (
+                      <CircularProgress size={26} className={classes.loginLoader} />
+                    ) : (
+                        <Button
+                          disabled={
+                            loginValue.length === 0 //|| passwordValue.length === 0
+                          }
+                          onClick={handleLoginSubmit}
+                          //variant="contained"
+                          color="primary"
+                          size="large"
+                        >
+                          Login
+                  </Button>
+                      )}
+                    <Button simple
+                      color="primary"
+                      size="large"
+                      className={classes.forgetButton}
+                    >
+                      Forgot Password
+                </Button>
+
                   </CardFooter>
                 </form>
               </Card>
             </GridItem>
           </GridContainer>
         </div>
-        <Footer whiteFont />
+        <Footer />
       </div>
     </div>
   );
