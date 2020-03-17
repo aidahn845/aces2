@@ -13,7 +13,7 @@ import styles from "assets/jss/material-kit-react/views/loginPage.js";
 import {
   List, ListItem, Box, Paper, Button, Divider, ListItemIcon, ListItemText,
   Stepper, Step, StepLabel, Typography, Grid, TextField, FormControl, FormGroup, FormLabel, FormControlLabel,
-  Checkbox, Switch, Fab
+  Checkbox, Switch, Fab, RadioGroup, Radio
 } from "@material-ui/core";
 import { People as PeopleIcon, Assignment as AssignmentIcon, ExitToApp as ExitToAppIcon, Add as AddIcon } from '@material-ui/icons';
 import { NavLink, Link } from "react-router-dom";
@@ -151,15 +151,22 @@ export default function ProjectView(props) {
       case 0:
         // basic infor
         return (
-          <Grid container>
+          <Grid container spacing={4}>
             <Grid item sm={12} md={12}>
               <TextField label='Project Title' defaultValue={isNewProject ? '' : project.name} fullWidth variant="outlined" />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
-              <Paper elevation={1} style={{ margin: '20px 0px', padding: '20px', height: '220px' }}>
+              <Paper elevation={1} style={{ margin: '0px 0px', padding: '20px', height: '220px' }}>
                 <FormControl>
                   <div style={{ fontWeight: 'bold', color: '#333' }}>Status</div>
-                  <FormGroup>
+                  <RadioGroup name="status1">
+                    <FormControlLabel value="1" control={<Radio color="primary" />} label="Planning" style={{ color: '#666' }} />
+                    <FormControlLabel value="2" control={<Radio color="primary" />} label="Design" style={{ color: '#666' }} />
+                    <FormControlLabel value="3" control={<Radio color="primary" />} label="Implementation" style={{ color: '#666' }} />
+                    <FormControlLabel value="4" control={<Radio color="primary" />} label="Live" style={{ color: '#666' }} />
+                  </RadioGroup>
+
+                  {/* <FormGroup>
                     <FormControlLabel
                       control={<Checkbox value="gilad" />}
                       label="Planning" style={{ color: '#666' }}
@@ -176,29 +183,29 @@ export default function ProjectView(props) {
                       control={<Checkbox value="antoine" />}
                       label="Live" style={{ color: '#666' }}
                     />
-                  </FormGroup>
+                  </FormGroup> */}
                 </FormControl>
               </Paper>
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
-              <Paper elevation={1} style={{ margin: '20px 20px', padding: '20px', height: '220px' }}>
+              <Paper elevation={1} style={{ margin: '0px 0px', padding: '20px', height: '220px' }}>
                 <FormControl>
                   <div style={{ fontWeight: 'bold', color: '#333' }}>Category</div>
                   <FormGroup>
                     <FormControlLabel
-                      control={<Switch value="gilad" style={{ padding: '10px' }} />}
+                      control={<Switch value="a" color="primary" />}
                       label="Autonomous" style={{ color: '#666' }}
                     />
                     <FormControlLabel
-                      control={<Switch value="jason" />}
+                      control={<Switch value="c" color="primary" />}
                       label="Connected" style={{ color: '#666' }}
                     />
                     <FormControlLabel
-                      control={<Switch value="antoine" />}
+                      control={<Switch value="e" color="primary" />}
                       label="Electric" style={{ color: '#666' }}
                     />
                     <FormControlLabel
-                      control={<Switch value="antoine" />}
+                      control={<Switch value="s" color="primary" />}
                       label="Shared" style={{ color: '#666' }}
                     />
                   </FormGroup>
@@ -206,20 +213,20 @@ export default function ProjectView(props) {
               </Paper>
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
-              <Paper elevation={1} style={{ margin: '20px 0px', padding: '20px', height: '220px' }}>
+              <Paper elevation={1} style={{ margin: '0px 0px', padding: '20px', height: '220px' }}>
                 <FormControl>
                   <div style={{ fontWeight: 'bold', color: '#333' }}>Mode</div>
                   <FormGroup>
                     <FormControlLabel
-                      control={<Switch value="gilad" />}
+                      control={<Switch value="a" color="primary" />}
                       label="Auto" style={{ color: '#666' }}
                     />
                     <FormControlLabel
-                      control={<Switch value="jason" />}
+                      control={<Switch value="b" color="primary" />}
                       label="Bike" style={{ color: '#666' }}
                     />
                     <FormControlLabel
-                      control={<Switch value="antoine" />}
+                      control={<Switch value="t" color="primary" />}
                       label="Transit" style={{ color: '#666' }}
                     />
                   </FormGroup>
@@ -231,7 +238,7 @@ export default function ProjectView(props) {
                 fullWidth variant="outlined" multiline rows="10" />
             </Grid>
             <Grid item sm={12} md={12}>
-              <Paper elevation={1} style={{ margin: '20px 0px', padding: '10px' }}>
+              <Paper elevation={1} style={{ margin: '0px 0px', padding: '10px' }}>
                 <div style={{ fontWeight: 'bold', color: '#333' }}>Images</div>
                 <ImageUploader
                   withIcon={true}

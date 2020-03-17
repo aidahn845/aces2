@@ -34,10 +34,6 @@ export default function ProjectList(props) {
   if (!isAdmin)
     return null;
 
-  const handleSignout = () => {
-    signOut(userDispatch, props.history);
-  }
-
   const handleEditUser = (event, rowData) => {
     console.log('edit user ' + rowData.id);
     props.history.push(Constants.ROOT_URL + "dashboard/users/" + rowData.id);

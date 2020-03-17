@@ -40,11 +40,6 @@ export default function DashboardNav(props) {
     signOut(userDispatch, props.history);
   }
 
-  const handleEditProject = (event, rowData) => {
-    console.log('edit project ' + rowData.id);
-    props.history.push(Constants.ROOT_URL + isAdmin ? "dashboard/projects/" : "my/projects/" + rowData.id);
-  }
-
   const { state, dispatch } = React.useContext(Store);
 
   const { projects, setProjects } = React.useState(dashboardProjects);

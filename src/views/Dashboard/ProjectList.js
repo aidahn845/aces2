@@ -122,13 +122,13 @@ export default function ProjectList(props) {
             }}
             actions={[
               {
-                icon: 'check',
-                tooltip: 'Approve',
+                icon: isAdmin ? 'check' : 'edit',
+                tooltip: isAdmin ? 'Approve' : 'Edit',
                 onClick: (event, rowData) => console.log("approve " + rowData.id)
               },
               {
-                icon: 'clear',
-                tooltip: 'Reject',
+                icon: isAdmin ? 'clear' : 'delete',
+                tooltip: isAdmin ? 'Reject' : 'Delete',
                 onClick: (event, rowData) => console.log("reject " + rowData.id)
               }
             ]}

@@ -76,7 +76,7 @@ export default function App() {
           isAuthenticated ? (
             <Redirect
               to={{
-                pathname: ROOT_URL + "dashboard",
+                pathname: ROOT_URL + "dashboard/projects",
               }}
             />
           ) : (
