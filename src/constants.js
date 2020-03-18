@@ -1,3 +1,15 @@
+export const HEADER_TITLE = 'FL A&middot;C&middot;E&middot;S';
+
+let root_url;
+if (process.env.REACT_APP_ENVIRONMENT === 'ghpages') {
+  root_url = "/aces2/";
+} else {
+  root_url = "/";
+}
+export const ROOT_URL = root_url;
+
+
+
 export const MAPBOX_TOKEN = "pk.eyJ1IjoieWh1YW5nNyIsImEiOiJjazJocjliaWEwdnd6M2hxZ2FnNHM3cDkwIn0.UQxOTkmbQTAv-e9El4zLKQ";
 export const MAPBOX_STYLE_STREET = "mapbox://styles/yhuang7/ck6nudp1h1am11intobzjm1em";
 export const MAPBOX_STYLE_SATELLITE = "mapbox://styles/yhuang7/ck7sem6mk2mi61imk9yqls0un";
@@ -84,17 +96,6 @@ export const FILTER_NAME_DISTRICT = 'district';
 
 //export const STATUS_COLORS = ['#ccc', '#9A00F0', '#FFD417', '#7373ff', '#00DC13', '#a3a3a3'];
 export const STATUS_COLORS = ['#ccc', '#F609B1', '#FFD000', '#7373ff', '#4EF609', '#a3a3a3'];
-
-export const HEADER_TITLE = 'FL A&middot;C&middot;E&middot;S';
-
-let root_url;
-if (process.env.REACT_APP_ENVIRONMENT === 'ghpages') {
-  root_url = "/aces2/";
-} else {
-  root_url = "/";
-}
-
-export const ROOT_URL = root_url;
 
 
 // actions
