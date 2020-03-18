@@ -21,7 +21,7 @@ export default function App() {
   var hist = createBrowserHistory();
 
   return (
-    <HashRouter history={hist}>
+    <Router history={hist}>
       <Switch>
         <Route path={ROOT_URL + "vision"} component={VisionPage} />
         <Route path={ROOT_URL + "projects/:id"} component={ProjectsPage} />
@@ -41,7 +41,7 @@ export default function App() {
         <Route path={ROOT_URL + "test"} component={TestPage} />
         <Route path={ROOT_URL} component={LandingPage} />
       </Switch>
-    </HashRouter>
+    </Router>
   );
 
   // #######################################################################
