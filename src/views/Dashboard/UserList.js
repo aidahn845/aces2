@@ -50,7 +50,7 @@ export default function ProjectList(props) {
                 title: '', field: 'id',
                 render: rowData =>
                   <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden' }}>
-                    <img src={Constants.ROOT_URL + 'images/user' + rowData.id + '.jpg'} width="40px" />
+                    <img src={Constants.STATIC_ROOT_URL + 'images/user' + rowData.id + '.jpg'} width="40px" />
                   </div>
               },
               {

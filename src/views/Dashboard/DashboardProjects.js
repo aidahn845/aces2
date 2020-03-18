@@ -48,8 +48,8 @@ export default function DashboardPage(props) {
   }
 
   const projectViewProps = {
-    projectId: projectId,
-    ...rest
+    ...rest,
+    projectId: projectId
   };
 
   return (

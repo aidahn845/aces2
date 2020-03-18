@@ -88,7 +88,7 @@ function processProjectData(projects) {
     // img url
     var imgURL = proj.properties.desc_photo;
     if (imgURL && !imgURL.toLowerCase().startsWith('http')) {
-      proj.properties.desc_photo = Constants.ROOT_URL + proj.properties.desc_photo;
+      proj.properties.desc_photo = Constants.STATIC_ROOT_URL + proj.properties.desc_photo;
     }
 
     // people

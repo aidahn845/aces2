@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect, HashRouter } from "react-router-dom";
-import { createBrowserHistory } from "history";
+import { createBrowserHistory, createHashHistory } from "history";
 import { ROOT_URL } from "../constants"
 
 import LandingPage from "../views/LandingPage/LandingPage.js";
@@ -18,30 +18,33 @@ import { useUserState } from "../context/UserContext";
 export default function App() {
   // global
   var { isAuthenticated, isAdmin } = useUserState();
-  var hist = createBrowserHistory();
+  //var hist = createBrowserHistory();
+  var hist = createHashHistory();
+
+  let rootpath = "/";
 
   return (
-    <Router history={hist} >
+    <HashRouter history={hist} basename={ROOT_URL} >
       <Switch>
-        <Route path={ROOT_URL + "vision"} component={VisionPage} />
-        <Route path={ROOT_URL + "projects/:id"} component={ProjectsPage} />
-        <Route path={ROOT_URL + "projects"} component={ProjectsPage} />
-        <Route path={ROOT_URL + "people"} component={PeoplePage} />
+        <Route path={rootpath + "vision"} component={VisionPage} />
+        <Route path={rootpath + "projects/:id"} component={ProjectsPage} />
+        <Route path={rootpath + "projects"} component={ProjectsPage} />
+        <Route path={rootpath + "people"} component={PeoplePage} />
 
-        <PublicRoute path={ROOT_URL + "login"} component={LoginPage} />
-        <Route exact path={ROOT_URL + "dashboard"}>
-          <Redirect to={ROOT_URL + "dashboard/projects"} />
+        <PublicRoute path={rootpath + "login"} component={LoginPage} />
+        <Route exact path={rootpath + "dashboard"}>
+          <Redirect to={rootpath + "dashboard/projects"} />
         </Route>
-        <PrivateRoute path={ROOT_URL + "dashboard/users/:id"} component={DashboardUsers} />
-        <PrivateRoute path={ROOT_URL + "dashboard/users"} component={DashboardUsers} />
-        <PrivateRoute path={ROOT_URL + "dashboard/projects/:id"} component={DashboardProjects} />
-        <PrivateRoute path={ROOT_URL + "dashboard/projects"} component={DashboardProjects} />
-        <PrivateRoute path={ROOT_URL + "dashboard"} component={DashboardProjects} />
+        <PrivateRoute path={rootpath + "dashboard/users/:id"} component={DashboardUsers} />
+        <PrivateRoute path={rootpath + "dashboard/users"} component={DashboardUsers} />
+        <PrivateRoute path={rootpath + "dashboard/projects/:id"} component={DashboardProjects} />
+        <PrivateRoute path={rootpath + "dashboard/projects"} component={DashboardProjects} />
+        <PrivateRoute path={rootpath + "dashboard"} component={DashboardProjects} />
 
-        <Route path={ROOT_URL + "test"} component={TestPage} />
-        <Route path={ROOT_URL} component={LandingPage} />
+        <Route path={rootpath + "test"} component={TestPage} />
+        <Route path={rootpath} component={LandingPage} />
       </Switch>
-    </Router>
+    </HashRouter>
   );
 
   // #######################################################################
@@ -56,7 +59,7 @@ export default function App() {
           ) : (
               <Redirect
                 to={{
-                  pathname: ROOT_URL + "login",
+                  pathname: rootpath + "login",
                   state: {
                     from: props.location,
                   },
@@ -76,7 +79,7 @@ export default function App() {
           isAuthenticated ? (
             <Redirect
               to={{
-                pathname: ROOT_URL + "dashboard/projects",
+                pathname: rootpath + "dashboard/projects",
               }}
             />
           ) : (

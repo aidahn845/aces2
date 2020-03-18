@@ -6,7 +6,8 @@ if (process.env.REACT_APP_ENVIRONMENT === 'ghpages') {
 } else {
   root_url = "/";
 }
-export const ROOT_URL = root_url;
+export const ROOT_URL = "/";
+export const STATIC_ROOT_URL = root_url;
 
 
 

@@ -265,7 +265,7 @@ export default function ProjectsPage(props) {
             state.mapStyle == Constants.MAPBOX_STYLE_STREET
               ?
               <ButtonBase onClick={onMapStyleClick}>
-                <img src={Constants.ROOT_URL + 'images/mini-satellite2.png'} width="75px" />
+                <img src={Constants.STATIC_ROOT_URL + 'images/mini-satellite2.png'} width="75px" />
                 <span style={{
                   position: 'absolute', bottom: '5px', left: '5px', color: 'white',
                   fontSize: '1em', fontWeight: 'bold'
@@ -274,7 +274,7 @@ export default function ProjectsPage(props) {
 
               :
               <ButtonBase onClick={onMapStyleClick}>
-                <img src={Constants.ROOT_URL + 'images/mini-map2.png'} width="75px" />
+                <img src={Constants.STATIC_ROOT_URL + 'images/mini-map2.png'} width="75px" />
                 <span style={{
                   position: 'absolute', bottom: '5px', left: '5px', color: 'white',
                   fontSize: '1em', fontWeight: 'bold'

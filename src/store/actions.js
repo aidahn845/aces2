@@ -1,7 +1,7 @@
 import * as Constants from "../constants"
 
 // payload: projects, geojson, project data is features array; by properties.id
-const PROJECTS_URL = Constants.ROOT_URL + "json/projects_data.json";
+const PROJECTS_URL = Constants.STATIC_ROOT_URL + "json/projects_data.json";
 export const fetchProjectsData = async dispatch => {
   //console.log(FETCH_PROJECTS_DATA + " action started");
 
@@ -14,7 +14,7 @@ export const fetchProjectsData = async dispatch => {
 };
 
 // geojson, array of features, 1 per project; by properties.id
-const GEOM_URL = Constants.ROOT_URL + "json/projects_geom0.json";
+const GEOM_URL = Constants.STATIC_ROOT_URL + "json/projects_geom0.json";
 export const fetchProjectsGeom = async dispatch => {
   const data = await fetch(GEOM_URL);
 

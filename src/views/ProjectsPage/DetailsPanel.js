@@ -31,8 +31,7 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 //import { Store } from "../../store/store"
 //import { toggleProjectFilters, viewProject } from "../../store/actions"
 
-import { MAPBOX_TOKEN, HEADER_TITLE, STATUS_COLORS, STATUS_PLAN, STATUS_DESIGN, 
-STATUS_IMPLEMENT, STATUS_LIVE, STATUS_ARCHIVE, ROOT_URL } from "../../constants"
+import * as Constants from "../../constants"
 
 import imagesStyle from "assets/jss/material-kit-react/imagesStyles.js";
 
@@ -203,14 +202,14 @@ export default function DetailsPanel(props) {
 
   const getStatusLabel = status => {
     switch (status) {
-      case STATUS_PLAN:
+      case Constants.STATUS_PLAN:
         return "Planning"
-      case STATUS_DESIGN:
-      case STATUS_IMPLEMENT:
+      case Constants.STATUS_DESIGN:
+      case Constants.STATUS_IMPLEMENT:
         return "Implementation"
-      case STATUS_LIVE:
+      case Constants.STATUS_LIVE:
         return "Live"
-      case STATUS_ARCHIVE:
+      case Constants.STATUS_ARCHIVE:
         return "Archived"
     }
     return '';
@@ -273,7 +272,7 @@ export default function DetailsPanel(props) {
         </Box>
         <Box flexWrap="nowrap" style={{ width: '30%', textAlign: 'right' }}>
           <svg height="16" width="16" style={{ verticalAlign: 'middle' }}>
-            <circle cx="8" cy="8" r="8" stroke="white" stroke-width="0" fill={STATUS_COLORS[pprops.status]} />
+            <circle cx="8" cy="8" r="8" stroke="white" stroke-width="0" fill={Constants.STATUS_COLORS[pprops.status]} />
           </svg>
           <FormLabel style={{ paddingLeft: '10px', verticalAlign: 'middle' }}>
             {getStatusLabel(pprops.status)}
@@ -298,7 +297,7 @@ export default function DetailsPanel(props) {
               <Grid item xs={12} sm={12} md={6}>
                 <Box display="flex" p={2} style={{ width: '100%' }}>
                   <div style={{ width: '80px', height: '80px', borderRadius: '50%', overflow: 'hidden' }}>
-                    <img src={ROOT_URL + 'images/user' + person.id + '.jpg'} width="80px" />
+                    <img src={Constants.STATIC_ROOT_URL + 'images/user' + person.id + '.jpg'} width="80px" />
                   </div>
                   <div style={{ padding: '10px 10px', verticalAlign: 'middle' }}>
                     <FormLabel style={{ fontWeight: 'bold', color: 'black' }}>{person.name}</FormLabel>

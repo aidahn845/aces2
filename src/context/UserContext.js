@@ -13,7 +13,7 @@ function userReducer(state, action) {
       // fetch user profile
       var match = dashboardUsers[Math.floor(Math.random() * dashboardUsers.length)];
 
-      return { ...state, isAuthenticated: true, isAdmin: isAdmin, profile: { ...match } };
+      return { ...state, isAuthenticated: true, isAdmin: isAdmin, profile: { ...match }};
     case "SIGN_OUT_SUCCESS":
       return { ...state, isAuthenticated: false, isAdmin: false, profile: null };
     default: {

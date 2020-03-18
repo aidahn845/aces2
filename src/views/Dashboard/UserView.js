@@ -73,7 +73,7 @@ export default function UserView(props) {
         <Grid container spacing={4} style={{ marginTop: '20px' }}>
           <Grid item xs={12} sm={12} md={12}>
             <div style={{ width: '120px', height: '120px', borderRadius: '50%', overflow: 'hidden' }}>
-              <img src={Constants.ROOT_URL + 'images/user' + user.id + '.jpg'} width="120px" />
+              <img src={Constants.STATIC_ROOT_URL + 'images/user' + user.id + '.jpg'} width="120px" />
             </div>
           </Grid>
 

@@ -101,7 +101,7 @@ export default function ProjectView(props) {
 
     if (activeStep === steps.length - 1) {
       // back to list
-      props.history.push(Constants.ROOT_URL + "dashboard/projects/");
+      props.history.push(Constants.ROOT_URL + "dashboard/projects");
     }
   };
 
@@ -128,6 +128,18 @@ export default function ProjectView(props) {
     setActiveStep(0);
   };
 
+
+  const [projectTitle, setProjectTitle] = React.useState(isNewProject ? '' : project.name);
+  const handleProjectTitleChange = event => {
+    setProjectTitle(event.target.value);
+  };
+
+  const [projectDesc, setProjectDesc] = React.useState(isNewProject ? '' : project.desc_text);
+  const handleProjectDescChange = event => {
+    setProjectDesc(event.target.value);
+  };
+
+
   const onViewportChange = vp => {
     setViewport(vp);
   }
@@ -135,7 +147,7 @@ export default function ProjectView(props) {
   // people
   var num = 2 + Math.floor(Math.random() * 8);
   let ppeople = [];
-  while(ppeople.length < num) {
+  while (ppeople.length < num) {
     var rnd = Math.floor(Math.random() * peopleDB.length);
     var person = peopleDB[rnd];
     const match = ppeople.find(function (element) {
@@ -145,7 +157,6 @@ export default function ProjectView(props) {
       ppeople.push(person);
   }
 
-
   const getStepContent = (step) => {
     switch (step) {
       case 0:
@@ -153,7 +164,7 @@ export default function ProjectView(props) {
         return (
           <Grid container spacing={4}>
             <Grid item sm={12} md={12}>
-              <TextField label='Project Title' defaultValue={isNewProject ? '' : project.name} fullWidth variant="outlined" />
+              <TextField label='Project Title' value={projectTitle} fullWidth variant="outlined" onChange={handleProjectTitleChange} />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <Paper elevation={1} style={{ margin: '0px 0px', padding: '20px', height: '220px' }}>
@@ -165,25 +176,6 @@ export default function ProjectView(props) {
                     <FormControlLabel value="3" control={<Radio color="primary" />} label="Implementation" style={{ color: '#666' }} />
                     <FormControlLabel value="4" control={<Radio color="primary" />} label="Live" style={{ color: '#666' }} />
                   </RadioGroup>
-
-                  {/* <FormGroup>
-                    <FormControlLabel
-                      control={<Checkbox value="gilad" />}
-                      label="Planning" style={{ color: '#666' }}
-                    />
-                    <FormControlLabel
-                      control={<Checkbox value="jason" />}
-                      label="Design" style={{ color: '#666' }}
-                    />
-                    <FormControlLabel
-                      control={<Checkbox value="antoine" />}
-                      label="Implementation" style={{ color: '#666' }}
-                    />
-                    <FormControlLabel
-                      control={<Checkbox value="antoine" />}
-                      label="Live" style={{ color: '#666' }}
-                    />
-                  </FormGroup> */}
                 </FormControl>
               </Paper>
             </Grid>
@@ -234,7 +226,7 @@ export default function ProjectView(props) {
               </Paper>
             </Grid>
             <Grid item sm={12} md={12}>
-              <TextField label="Project Description" defaultValue={isNewProject ? '' : project.desc_text}
+              <TextField label="Project Description" value={projectDesc} onChange={handleProjectDescChange}
                 fullWidth variant="outlined" multiline rows="10" />
             </Grid>
             <Grid item sm={12} md={12}>
@@ -285,7 +277,7 @@ export default function ProjectView(props) {
                     title: '', field: 'id',
                     render: rowData =>
                       <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden' }}>
-                        <img src={Constants.ROOT_URL + 'images/user' + rowData.id + '.jpg'} width="40px" />
+                        <img src={Constants.STATIC_ROOT_URL + 'images/user' + rowData.id + '.jpg'} width="40px" />
                       </div>
                   },
                   {

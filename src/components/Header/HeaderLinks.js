@@ -19,7 +19,7 @@ import { Apps, CloudDownload, AccountCircle, Person, Settings } from "@material-
 import CustomDropdown from "components/CustomDropdown/CustomDropdown.js";
 import { Button } from "components/CustomButtons/Button";
 
-import { ROOT_URL } from "../../constants"
+import * as Constants from "../../constants"
 
 import { useUserState, useUserDispatch, loginUser, signOut } from "../../context/UserContext";
 
@@ -60,9 +60,9 @@ export default function HeaderLinks(props) {
 
   const handleAvatarClick = () => {
     if (isAuthenticated) {
-      props.history.push(ROOT_URL + "dashboard/projects");
+      props.history.push(Constants.ROOT_URL + "dashboard/projects");
     } else {
-      props.history.push(ROOT_URL + "login");
+      props.history.push(Constants.ROOT_URL + "login");
     }
   };
 
@@ -76,7 +76,7 @@ export default function HeaderLinks(props) {
         >
           Vision
         </Button> */}
-        <NavLink to={ROOT_URL + "vision"} className={classes.navLink}
+        <NavLink to={Constants.ROOT_URL + "vision"} className={classes.navLink}
           activeStyle={{ fontWeight: 'bold', borderBottom: 'solid 2px #fff' }}>Vision</NavLink>
       </ListItem>
       <ListItem className={classes.listItem}>
@@ -86,7 +86,7 @@ export default function HeaderLinks(props) {
         >
           Projects
         </Button>
- */}        <NavLink to={ROOT_URL + "projects"} className={classes.navLink}
+ */}        <NavLink to={Constants.ROOT_URL + "projects"} className={classes.navLink}
           activeStyle={{ fontWeight: 'bold', borderBottom: 'solid 2px #fff' }}>Projects</NavLink>
       </ListItem>
       <ListItem className={classes.listItem}>
@@ -96,7 +96,7 @@ export default function HeaderLinks(props) {
         >
           People
         </Button>
- */}        <NavLink to={ROOT_URL + "people"} className={classes.navLink}
+ */}        <NavLink to={Constants.ROOT_URL + "people"} className={classes.navLink}
           activeStyle={{ fontWeight: 'bold', borderBottom: 'solid 2px #fff' }}>People</NavLink>
       </ListItem>
 
@@ -105,32 +105,13 @@ export default function HeaderLinks(props) {
           {
             isAuthenticated ? (
               isAdmin ? <Avatar className={classes2.avatar} style={{ backgroundColor: '#FF8C00' }}>A</Avatar>
-                : <Avatar src={ROOT_URL + 'images/user' + profile.id + '.jpg'}
+                : <Avatar src={Constants.STATIC_ROOT_URL + 'images/user' + profile.id + '.jpg'}
                   className={classes2.avatar}></Avatar>
             )
               : <Avatar className={classes2.avatar}><Person /></Avatar>
           }
         </IconButton>
-        {/*         <CustomDropdown
-          noLiPadding
-          buttonText=""
-          buttonProps={{
-            className: classes.navLink,
-            color: "transparent"
-          }}
-          buttonIcon={AccountIcon}
-          dropdownList={[
-            <Link to="/" className={classes.dropdownLink}>
-              My Profile
-            </Link>,
-            <Link to="/" className={classes.dropdownLink}>
-              My Projects
-            </Link>
-          ]}
-        /> */}
       </ListItem>
-
-
     </List>
   );
 }
