@@ -56,19 +56,6 @@ export default function ProjectList(props) {
   });
 
   if (!isAdmin) {
-    // fake filter down list
-    // var num = 1 + Math.floor(Math.random() * 5);
-    // let arr = [];
-    // for (let i = 0; i < num; i++) {
-    //   var rnd = Math.floor(Math.random() * activeProjects.length);
-    //   var p = activeProjects[rnd];
-    //   const match = arr.find(function (element) {
-    //     return element.id == p.id;
-    //   });
-    //   if (!match)
-    //     arr.push(p);
-    // }
-
     let arr = activeProjects.filter(function (element) {
       return profile.projects.includes(element.id);
     });
@@ -76,19 +63,6 @@ export default function ProjectList(props) {
   }
 
   if (!isAdmin) {
-    // fake filter down list
-    // var num = Math.floor(Math.random() * 5);
-    // let arr = [];
-    // for (let i = 0; i < num; i++) {
-    //   var rnd = Math.floor(Math.random() * pendingProjects.length);
-    //   var p = pendingProjects[rnd];
-    //   const match = arr.find(function (element) {
-    //     return element.id == p.id;
-    //   });
-    //   if (!match)
-    //     arr.push(p);
-    // }
-
     let arr = pendingProjects.filter(function (element) {
       return profile.projects.includes(element.id);
     });
@@ -163,18 +137,24 @@ export default function ProjectList(props) {
           selection: false,
           actionsColumnIndex: -1
         }}
-        actions={[
-          {
-            icon: 'edit',
-            tooltip: 'Edit Project',
-            onClick: handleEditProject
-          },
-          {
-            icon: 'delete',
-            tooltip: 'Delete Project',
-            onClick: (event, rowData) => console.log("delete " + rowData.id)
-          }
-        ]}
+        actions={
+          isAdmin
+            ? [{
+              icon: 'edit',
+              tooltip: 'Edit Project',
+              onClick: handleEditProject
+            },
+            {
+              icon: 'delete',
+              tooltip: 'Delete Project',
+              onClick: (event, rowData) => console.log("delete " + rowData.id)
+            }]
+            : [{
+              icon: 'edit',
+              tooltip: 'Edit Project',
+              onClick: handleEditProject
+            }]
+        }
         onRowClick={handleEditProject}
       />
       <div style={{ textAlign: 'right' }}>

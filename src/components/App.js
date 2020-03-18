@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect, HashRouter } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { ROOT_URL } from "../constants"
 
@@ -21,7 +21,7 @@ export default function App() {
   var hist = createBrowserHistory();
 
   return (
-    <Router history={hist}>
+    <HashRouter history={hist}>
       <Switch>
         <Route path={ROOT_URL + "vision"} component={VisionPage} />
         <Route path={ROOT_URL + "projects/:id"} component={ProjectsPage} />
@@ -41,7 +41,7 @@ export default function App() {
         <Route path={ROOT_URL + "test"} component={TestPage} />
         <Route path={ROOT_URL} component={LandingPage} />
       </Switch>
-    </Router>
+    </HashRouter>
   );
 
   // #######################################################################
