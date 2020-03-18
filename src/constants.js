@@ -2,7 +2,7 @@ export const HEADER_TITLE = 'FL A&middot;C&middot;E&middot;S';
 
 let root_url;
 if (process.env.REACT_APP_ENVIRONMENT === 'ghpages') {
-  root_url = "/acestest/";
+  root_url = "/aces2/";
 } else {
   root_url = "/";
 }
