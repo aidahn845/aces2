@@ -94,23 +94,37 @@ export default function ProjectList(props) {
               selection: false,
               actionsColumnIndex: -1
             }}
-            actions={[
-              {
-                icon: isAdmin ? 'check' : 'edit',
-                tooltip: isAdmin ? 'Approve' : 'Edit',
-                onClick: (event, rowData) => console.log("approve " + rowData.id)
-              },
-              {
-                icon: isAdmin ? 'clear' : 'delete',
-                tooltip: isAdmin ? 'Reject' : 'Delete',
-                onClick: (event, rowData) => console.log("reject " + rowData.id)
-              }
-            ]}
+            actions={
+              isAdmin
+                ? [{
+                  icon: 'edit',
+                  tooltip: 'Edit Project',
+                  onClick: handleEditProject
+                },
+                {
+                  icon: 'check',
+                  tooltip: 'Approve',
+                  onClick: (event, rowData) => console.log("approve " + rowData.id)
+                },
+                {
+                  icon: 'clear',
+                  tooltip: 'Reject',
+                  onClick: (event, rowData) => console.log("reject " + rowData.id)
+                }]
+                : [{
+                  icon: 'edit',
+                  tooltip: 'Edit Project',
+                  onClick: handleEditProject
+                },
+                {
+                  icon: 'delete',
+                  tooltip: 'Delete',
+                  onClick: (event, rowData) => console.log("delete " + rowData.id)
+                }]}
             onRowClick={handleEditProject}
           />
         </React.Fragment>
       }
-
 
       <div style={{ margin: '30px 0 15px 0', fontSize: '1.4em', fontWeight: 'bold' }}>
         Active Projects
