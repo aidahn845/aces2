@@ -11,6 +11,7 @@ import ProjectsPage from "../views/ProjectsPage/ProjectsPage.js";
 import DashboardProjects from "../views/Dashboard/DashboardProjects";
 import DashboardUsers from "../views/Dashboard/DashboardUsers";
 import TestPage from "../views/TestPage"
+import SpatPage from "../views/SpatPage";
 
 // context
 import { useUserState } from "../context/UserContext";
@@ -29,6 +30,7 @@ export default function App() {
         <Route path={rootpath + "vision"} component={VisionPage} />
         <Route path={rootpath + "projects/:id"} component={ProjectsPage} />
         <Route path={rootpath + "projects"} component={ProjectsPage} />
+        <Route path={rootpath + "federal"} component={SpatPage} />
         <Route path={rootpath + "people"} component={PeoplePage} />
 
         <PublicRoute path={rootpath + "login"} component={LoginPage} />

@@ -1,35 +1,6 @@
 {
-   "type": "FeatureCollection",
-   "features": [
-  {
-    "type": "Feature",
-    "geometry": {
-       "type": "Point",
-       "coordinates":  [ -81.41830444335938,28.42401436651578 ]
-    },
-    "properties": {
-    "id":101,
-    "name":"Central Florida Autonomous Vehicle Proving Ground",
-    "status":1,
-    "category":"a;c;e",
-    "district":"5",
-    "mode":"a;t",
-    "geom":"1",
-    "people":"1;2",
-    "desc_photo":"https://www.fdot.gov/images/default-source/content-images/traffic/its/projects_deploy/cv/images/CF_AV_Map.png",
-    "desc_text":"The Central Florida Automated Vehicle Partnership applied for and was approved by the United States Department of Transportation as a proving ground to become one of the nation’s premiere cluster for research and development of automated vehicle technology across all modes of travel. The City of Orlando led the effort in partnership with FDOT, Central Florida Expressway Authority, University of Central Florida, Florida Polytechnic University, Florida A&M University, Florida State University, Lynx, and NASA.",
-    "desc_video":"",
-    "sponsors":"",
-    "partners":"",
-    "keywords":"",
-    "start_date":"",
-    "end_date":"",
-    "funding":"",
-    "last_updated":"",
-    "data":"",
-    "metrics":""
-    }
-  },
+  "type": "FeatureCollection",
+  "features": [
   {
     "type": "Feature",
     "geometry": {

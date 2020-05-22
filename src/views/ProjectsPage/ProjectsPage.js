@@ -101,7 +101,7 @@ export default function ProjectsPage(props) {
       state.projects.length === 0 && fetchProjectsData(dispatch)
         && fetchProjectsGeom(dispatch);
     },
-    [state]
+    [state.projects]
   );
 
   const mbProjectSourceRef = React.useRef();
@@ -243,7 +243,7 @@ export default function ProjectsPage(props) {
 
               <div style={{
                 position: 'absolute', padding: '10px', top: '2px',
-                right: (projectId > 0) ? '0px' : 'calc(20vw + 10px)'
+                right: (true /*projectId > 0*/) ? '0px' : 'calc(20vw + 10px)'
               }}>
                 <NavigationControl />
               </div>
@@ -253,7 +253,7 @@ export default function ProjectsPage(props) {
           <DetailsPanel {...detailsProps} />
         </Box>
 
-        <ResultsPanel {...resultsProps} />
+        {/* <ResultsPanel {...resultsProps} /> */}
         <FilterPanel {...filtersProps} />
 
         <Paper elevation={2} style={{

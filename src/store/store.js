@@ -16,8 +16,17 @@ export const Store = React.createContext("");
 */
 const initialViewport = {
   latitude: 28.15,
-  longitude: -82.5,
+  longitude: -84.5,
   zoom: 6,
+  bearing: 0,
+  pitch: 0,
+  transitionDuration: Constants.MAPBOX_TRANSITION_DURATION
+};
+
+const spatInitialViewport = {
+  latitude: 38.84706035607122,
+  longitude: -96.57421875,
+  zoom: 3.5,
   bearing: 0,
   pitch: 0,
   transitionDuration: Constants.MAPBOX_TRANSITION_DURATION
@@ -41,38 +50,35 @@ const initialState = {
   mapGeomLinePaint: Constants.MAPBOX_GEOM_LINE_PAINT_MAP,
   mapGeomPolygonFilter: ['all', Constants.MAPBOX_GEOM_POLYGON_BASE_FILTER, Constants.MAPBOX_GEOM_BASE_FILTER],
   mapGeomPolygonPaint: Constants.MAPBOX_GEOM_POLYGON_PAINT_MAP,
+
+  spatViewport: spatInitialViewport,
+  spatList: [],
+
 };
 
-/*const peopleDB = [
-  {
-    id: 1000, name: 'Vanko Antonov',
-  }, {
-    id: 1001, name: 'Juan Battle',
-  }, {
-    id: 1002, name: 'Megan Cott',
-  }, {
-    id: 1003, name: 'Julie Bond',
-  }, {
-    id: 1004, name: 'Omkar Dokur',
-  }, {
-    id: 1005, name: 'Lucy Deba Enomah',
-  }, {
-    id: 1006, name: 'Dennis Hinebaugh',
-  }, {
-    id: 1007, name: 'Jason Jackman',
-  }, {
-    id: 1008, name: 'Chanyoung Lee Ph.D.',
-  }, {
-    id: 1009, name: 'Stephanie Lewis',
-  }, {
-    id: 1010, name: 'Dr. Fred L. Mannering',
-  }, {
-    id: 1011, name: 'Nikhil Menon Ph.D.',
-  }, {
-    id: 1012, name: 'Lori Palaio',
-  }
-];*/
 
+function processSpatData(data) {
+  let processed = [];
+
+  data.map((spat, index) => {
+    processed.push({
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [spat.coords.lng, spat.coords.lat]
+      },
+      properties: {
+        status: spat.status,
+        location: spat.location,
+        timeline: spat.timeline,
+        description: spat.description,
+        contact: spat.contact
+      }
+    });
+  });
+
+  return processed;
+}
 
 function processProjectData(projects) {
   projects.sort((a, b) => {
@@ -261,6 +267,17 @@ function reducer(state, action) {
         filters: [],
         visibleProjects: Array.from(state.projects)
       };
+
+    case Constants.FETCH_SPAT_DATA:
+      let data = processSpatData(action.payload);
+      return {
+        ...state, spatList: data
+      };
+    case Constants.SET_SPAT_VIEWPORT:
+      return {
+        ...state, spatViewport: action.payload
+      };
+
     default:
       return state;
   }

@@ -118,3 +118,24 @@ export const toggleGeomVisibility = (projectId, state, dispatch) => {
 
 
 // 
+
+
+//const SPAT_DATA_URL = 'https://transportationops.org/sites/transops/themes/transops/js/spat-pins.json';
+const SPAT_DATA_URL = Constants.STATIC_ROOT_URL + "json/spat-pins.json";
+export const fetchSpatData = async dispatch => {
+  const data = await fetch(SPAT_DATA_URL);
+  const dataJSON = await data.json();
+  return dispatch({
+    type: Constants.FETCH_SPAT_DATA,
+    payload: dataJSON
+  });
+};
+
+export const setSpatViewport = (viewport, state, dispatch) => {
+  let dispatchObj = {
+    type: Constants.SET_SPAT_VIEWPORT,
+    payload: viewport
+  };
+  return dispatch(dispatchObj);
+};
+

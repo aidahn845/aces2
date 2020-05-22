@@ -70,33 +70,19 @@ export default function HeaderLinks(props) {
   return (
     <List className={classes.list}>
       <ListItem className={classes.listItem}>
-        {/*         <Button component={Link} to="/vision" variant="contained"
-          color="transparent"
-          className={classes.navLink}
-        >
-          Vision
-        </Button> */}
         <NavLink to={Constants.ROOT_URL + "vision"} className={classes.navLink}
           activeStyle={{ fontWeight: 'bold', borderBottom: 'solid 2px #fff' }}>Vision</NavLink>
       </ListItem>
       <ListItem className={classes.listItem}>
-        {/*         <Button component={Link} to="/projects" variant="contained"
-          color="transparent"
-          className={classes.navLink}
-        >
-          Projects
-        </Button>
- */}        <NavLink to={Constants.ROOT_URL + "projects"} className={classes.navLink}
+        <NavLink to={Constants.ROOT_URL + "projects"} className={classes.navLink}
           activeStyle={{ fontWeight: 'bold', borderBottom: 'solid 2px #fff' }}>Projects</NavLink>
       </ListItem>
       <ListItem className={classes.listItem}>
-        {/*         <Button component={Link} to="/people" variant="contained"
-          color="transparent"
-          className={classes.navLink}
-        >
-          People
-        </Button>
- */}        <NavLink to={Constants.ROOT_URL + "people"} className={classes.navLink}
+        <NavLink to={Constants.ROOT_URL + "federal"} className={classes.navLink}
+          activeStyle={{ fontWeight: 'bold', borderBottom: 'solid 2px #fff' }}>Federal Initiatives</NavLink>
+      </ListItem>
+      <ListItem className={classes.listItem}>
+        <NavLink to={Constants.ROOT_URL + "people"} className={classes.navLink}
           activeStyle={{ fontWeight: 'bold', borderBottom: 'solid 2px #fff' }}>People</NavLink>
       </ListItem>
 
