@@ -83,18 +83,19 @@ export default function SpatPage(props) {
     return (
       popupInfo &&
       <Popup
-        tipSize={2}
+        tipSize={4}
         anchor="bottom"
         longitude={popupInfo.geometry.coordinates[0]}
         latitude={popupInfo.geometry.coordinates[1]}
         closeOnClick={true}
+        captureScroll={true}
         onClose={() => setPopupInfo(null)}
       >
-        <div style={{ width: '400px', height: '300px', overflow: 'auto', fontSize: '9px' }}>
-          <p><strong>Location:</strong>&nbsp;&nbsp;{popupInfo.properties.location}</p>
-          <p><strong>Timeline:</strong>&nbsp;&nbsp;{popupInfo.properties.timeline}</p>
-          <p><strong>Description:</strong>&nbsp;&nbsp;{popupInfo.properties.description}</p>
-          <p><strong>Contact:</strong>&nbsp;&nbsp;<span dangerouslySetInnerHTML={{ __html: popupInfo.properties.contact }} /></p>
+        <div style={{ width: '240px', height: '300px', overflow: 'auto' }}>
+          <p style={{fontSize: '10px'}}><strong>Location:</strong>&nbsp;&nbsp;{popupInfo.properties.location}</p>
+          <p style={{fontSize: '10px'}}><strong>Timeline:</strong>&nbsp;&nbsp;{popupInfo.properties.timeline}</p>
+          <p style={{fontSize: '10px'}}><strong>Description:</strong>&nbsp;&nbsp;{popupInfo.properties.description}</p>
+          <p style={{fontSize: '10px'}}><strong>Contact:</strong>&nbsp;&nbsp;<span dangerouslySetInnerHTML={{ __html: popupInfo.properties.contact }} /></p>
         </div>
       </Popup>
     );
